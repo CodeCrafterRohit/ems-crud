@@ -1,10 +1,20 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 
 const SignUp = () => {
   let [showPassword1, setShowPassword1] = useState(false);
   let [showPassword2, setShowPassword2] = useState(false);
+  let [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  //! Destructuring the formData
+  let { username, email, password, confirmPassword } = formData;
 
   let togglePassword1 = () => {
     setShowPassword1(!showPassword1);
@@ -13,6 +23,24 @@ const SignUp = () => {
   let togglePassword2 = () => {
     setShowPassword2(!showPassword2);
   };
+
+  //! handleInputChange
+  let handleInputChange = (e) => {
+    let { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  //! handleSubmit
+  let handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      console.log("User Data:", formData);
+      toast.success("Sign Up Successfully Redirecting to Login Page");
+    } catch (error) {
+      console.log("Error while sign up:", error);
+      toast.error(error.message);
+    }
+  };
   return (
     <section className="w-full min-h-[90vh] flex justify-center items-center">
       <article className="w-[30%] bg-gray-900 text-white p-5 rounded-lg">
@@ -20,7 +48,7 @@ const SignUp = () => {
           <h1 className="text-4xl text-center p-3 font-bold">Sign Up</h1>
         </header>
         <main className="p-3">
-          <form className="flex flex-col gap-3">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <div className="flex flex-col gap-2">
               <label htmlFor="username" className="text-xl">
                 Name
@@ -31,6 +59,8 @@ const SignUp = () => {
                 id="username"
                 placeholder="Enter your name"
                 className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
+                value={username}
+                onChange={handleInputChange}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -43,6 +73,8 @@ const SignUp = () => {
                 id="email"
                 placeholder="Enter you email"
                 className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
+                value={email}
+                onChange={handleInputChange}
               />
             </div>
             <div className="flex flex-col gap-2 relative">
@@ -55,6 +87,8 @@ const SignUp = () => {
                 id="password"
                 placeholder="Enter your password"
                 className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
+                value={password}
+                onChange={handleInputChange}
               />
               <span
                 onClick={togglePassword1}
@@ -73,6 +107,8 @@ const SignUp = () => {
                 id="confirmPassword"
                 placeholder="Confrim your password again"
                 className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black placeholder:text-md transition-all duration-150 ease-linear text-lg"
+                value={confirmPassword}
+                onChange={handleInputChange}
               />
               <span
                 onClick={togglePassword2}
