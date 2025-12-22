@@ -1,9 +1,12 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { IoEye, IoEyeOff } from "react-icons/io5";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { __AUTH } from "../../backend/firebaseConfig";
 
 const SignUp = () => {
+  let navigate = useNavigate();
   let [showPassword1, setShowPassword1] = useState(false);
   let [showPassword2, setShowPassword2] = useState(false);
   let [formData, setFormData] = useState({
@@ -31,11 +34,26 @@ const SignUp = () => {
   };
 
   //! handleSubmit
-  let handleSubmit = (e) => {
+  let handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("User Data:", formData);
-      toast.success("Sign Up Successfully Redirecting to Login Page");
+      if (password === confirmPassword) {
+        //! Storing the email and password in the firebase
+        //! createUserWithEmailAndPassword(auth, email, password)
+
+        let registeredUser = await createUserWithEmailAndPassword(
+          __AUTH,
+          email,
+          password
+        );
+        console.log(registeredUser);
+
+        console.log("User Data:", formData);
+        toast.success("Sign Up Successfully Redirecting to Login Page");
+        navigate("/auth/login");
+      } else {
+        toast.error("Please verify the password and confirm password");
+      }
     } catch (error) {
       console.log("Error while sign up:", error);
       toast.error(error.message);
