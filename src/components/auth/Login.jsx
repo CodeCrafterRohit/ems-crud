@@ -1,67 +1,134 @@
 import React, { useState } from "react";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
-  let [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  let togglePassword = () => {
-    setShowPassword(!showPassword);
+  const { email, password } = formData;
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Logic
+      console.log("Login Data:", formData);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  //! Reusable classes for input fields
+  const inputClasses = `
+    w-full bg-gray-800 border border-gray-700 p-3 rounded-lg text-white 
+    outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent 
+    transition-all duration-200 placeholder:text-gray-500 text-base
+  `;
+
   return (
-    <section className="w-full min-h-[90vh] flex justify-center items-center">
-      <article className="w-[30%] bg-gray-900 text-white p-5 rounded-lg">
-        <header>
-          <h1 className="text-4xl text-center p-3 font-bold">Login</h1>
+    <section className="w-full grow flex justify-center items-center p-4 bg-gray-50">
+      <article className="w-full max-w-md bg-gray-900 text-white shadow-2xl rounded-2xl overflow-hidden">
+        <header className="bg-indigo-700 py-6">
+          <h1 className="text-3xl text-center font-bold tracking-tight">
+            Login
+          </h1>
+          <p className="text-center text-indigo-200 text-sm mt-1">
+            Access your EMS account
+          </p>
         </header>
-        <main className="p-3">
-          <form className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-xl">
-                Email
+
+        <main className="p-8">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="text-sm font-medium text-white">
+                Email Address
               </label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                placeholder="Enter you email"
-                className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
+                placeholder="name@company.com"
+                className={inputClasses}
+                value={email}
+                onChange={handleInputChange}
+                required
               />
-            </div>
-            <div className="flex flex-col gap-2 relative">
-              <label htmlFor="password" className="text-xl">
-                Password
-              </label>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                id="password"
-                placeholder="Enter your password"
-                className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
-              />
-              <span
-                onClick={togglePassword}
-                className="absolute right-3 top-12 text-black text-xl cursor-pointer"
-              >
-                {showPassword ? <IoEye /> : <IoEyeOff />}
-              </span>
             </div>
 
-            <div className="flex mt-4">
-              <button className="w-full p-2 text-xl bg-indigo-600 rounded-lg hover:bg-indigo-700 cursor-pointer transition-all duration-150 ease-out">
-                Login
-              </button>
+            <div className="flex flex-col gap-1.5 relative">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-white"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  placeholder="••••••••"
+                  className={inputClasses}
+                  value={password}
+                  onChange={handleInputChange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showPassword ? <IoEye size={20} /> : <IoEyeOff size={20} />}
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2 justify-center items-center">
-              <span className=" flex gap-1">
+
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  name="rememberMe"
+                  className="w-4 h-4 rounded border-gray-700 bg-gray-800 text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer"
+                />
+                <label
+                  htmlFor="rememberMe"
+                  className="text-gray-300 cursor-pointer select-none"
+                >
+                  Remember me
+                </label>
+              </div>
+              <NavLink
+                to="/auth/forgot-password"
+                className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+              >
+                Forgot password?
+              </NavLink>
+            </div>
+
+            <button className="w-full mt-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg shadow-lg transform transition active:scale-[0.98]">
+              Login
+            </button>
+
+            <div className="text-center text-gray-400 text-sm mt-2">
+              <p>
                 Don't have an account?
                 <NavLink
-                  to={"/auth/sign-up"}
-                  className={"hover:text-indigo-500 underline transition-all"}
+                  to="/auth/sign-up"
+                  className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4 ml-1"
                 >
                   Sign Up
                 </NavLink>
-              </span>
+              </p>
             </div>
           </form>
         </main>

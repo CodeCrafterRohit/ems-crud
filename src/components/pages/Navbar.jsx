@@ -4,10 +4,10 @@ import Menu from "./Menu";
 
 const Navbar = () => {
   return (
-    <div className="w-full h-18 shadow-xl flex justify-between items-center px-4">
+    <nav className="w-full h-18 bg-white shadow-xl border-b border-gray-100 flex justify-between items-center px-10">
       <Logo />
       <Menu />
-    </div>
+    </nav>
   );
 };
 

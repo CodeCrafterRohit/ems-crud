@@ -10,8 +10,10 @@ const Menu = () => {
             to={"/"}
             className={({ isActive }) => {
               return `${
-                isActive ? "bg-blue-700 text-white" : ""
-              } px-6 py-2 text-blue-600 hover:text-white hover:bg-blue-600 text-lg cursor-pointer rounded-lg transition-all duration-100 ease-linear font-semibold`;
+                isActive
+                  ? "bg-indigo-700 text-white shadow-md"
+                  : "text-indigo-600 hover:bg-indigo-50"
+              } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
             }}
           >
             Home
@@ -22,8 +24,10 @@ const Menu = () => {
             to={"/auth/login"}
             className={({ isActive }) => {
               return `${
-                isActive ? "bg-blue-700 text-white" : ""
-              } px-6 py-2 text-blue-600 hover:text-white hover:bg-blue-600 text-lg cursor-pointer rounded-lg transition-all duration-100 ease-linear font-semibold`;
+                isActive
+                  ? "bg-indigo-700 text-white shadow-md"
+                  : "text-indigo-600 hover:bg-indigo-50"
+              } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
             }}
           >
             Login
@@ -34,8 +38,10 @@ const Menu = () => {
             to={"/auth/sign-up"}
             className={({ isActive }) => {
               return `${
-                isActive ? "bg-blue-700 text-white" : ""
-              } px-6 py-2 text-blue-600 hover:text-white hover:bg-blue-600 text-lg cursor-pointer rounded-lg transition-all duration-100 ease-linear font-semibold`;
+                isActive
+                  ? "bg-indigo-700 text-white shadow-md"
+                  : "text-indigo-600 hover:bg-indigo-50"
+              } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
             }}
           >
             Sign Up

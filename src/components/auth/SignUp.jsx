@@ -6,151 +6,167 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { __AUTH } from "../../backend/firebaseConfig";
 
 const SignUp = () => {
-  let navigate = useNavigate();
-  let [showPassword1, setShowPassword1] = useState(false);
-  let [showPassword2, setShowPassword2] = useState(false);
-  let [formData, setFormData] = useState({
+  const navigate = useNavigate();
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  //! Destructuring the formData
-  let { username, email, password, confirmPassword } = formData;
+  const { username, email, password, confirmPassword } = formData;
 
-  let togglePassword1 = () => {
-    setShowPassword1(!showPassword1);
-  };
-
-  let togglePassword2 = () => {
-    setShowPassword2(!showPassword2);
-  };
-
-  //! handleInputChange
-  let handleInputChange = (e) => {
-    let { name, value } = e.target;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  //! handleSubmit
-  let handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (password === confirmPassword) {
-        //! Storing the email and password in the firebase
-        //! createUserWithEmailAndPassword(auth, email, password)
-
-        let registeredUser = await createUserWithEmailAndPassword(
+        const registeredUser = await createUserWithEmailAndPassword(
           __AUTH,
           email,
           password
         );
-        console.log(registeredUser);
-
+        console.log("Registered User:", registeredUser);
         console.log("User Data:", formData);
-        toast.success("Sign Up Successfully Redirecting to Login Page");
+        toast.success("Sign Up Successfully! Redirecting...");
         navigate("/auth/login");
       } else {
-        toast.error("Please verify the password and confirm password");
+        toast.error("Passwords do not match");
       }
     } catch (error) {
-      console.log("Error while sign up:", error);
       toast.error(error.message);
     }
   };
+
+  //! Resuseable classes for input fields
+  const inputClasses = `
+    w-full bg-gray-800 border border-gray-700 p-2 rounded-lg text-white 
+    outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent 
+    transition-all duration-200 placeholder:text-gray-500 text-base
+  `;
+
   return (
-    <section className="w-full min-h-[90vh] flex justify-center items-center">
-      <article className="w-[30%] bg-gray-900 text-white p-5 rounded-lg">
-        <header>
-          <h1 className="text-4xl text-center p-3 font-bold">Sign Up</h1>
+    <section className="w-full grow flex justify-center items-center p-4 bg-gray-50">
+      <article className="w-full max-w-md bg-gray-900 text-white shadow-2xl rounded-2xl overflow-hidden">
+        <header className="bg-indigo-700 py-4">
+          <h1 className="text-3xl text-center font-bold tracking-tight">
+            Create Account
+          </h1>
+          <p className="text-center text-indigo-200 text-sm mt-1">
+            Join the EMS community today
+          </p>
         </header>
-        <main className="p-3">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="username" className="text-xl">
-                Name
+
+        <main className="px-8 py-5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="username"
+                className="text-sm font-medium text-white"
+              >
+                Full Name
               </label>
               <input
                 type="text"
                 name="username"
                 id="username"
-                placeholder="Enter your name"
-                className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
+                placeholder="John Doe"
+                className={inputClasses}
                 value={username}
                 onChange={handleInputChange}
+                required
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-xl">
-                Email
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="text-sm font-medium text-white">
+                Email Address
               </label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                placeholder="Enter you email"
-                className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
+                placeholder="name@company.com"
+                className={inputClasses}
                 value={email}
                 onChange={handleInputChange}
+                required
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
-              <label htmlFor="password" className="text-xl">
+            <div className="flex flex-col gap-1.5 relative">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-white"
+              >
                 Password
               </label>
-              <input
-                type={showPassword1 ? "text" : "password"}
-                name="password"
-                id="password"
-                placeholder="Enter your password"
-                className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black transition-all duration-150 ease-linear text-lg placeholder:text-md"
-                value={password}
-                onChange={handleInputChange}
-              />
-              <span
-                onClick={togglePassword1}
-                className="absolute right-3 top-12 text-black text-xl cursor-pointer"
-              >
-                {showPassword1 ? <IoEye /> : <IoEyeOff />}
-              </span>
+              <div className="relative">
+                <input
+                  type={showPassword1 ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  placeholder="••••••••"
+                  className={inputClasses}
+                  value={password}
+                  onChange={handleInputChange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword1(!showPassword1)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showPassword1 ? <IoEye size={20} /> : <IoEyeOff size={20} />}
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col gap-2 relative">
-              <label htmlFor="confirmPassword" className="text-xl">
+
+            <div className="flex flex-col gap-1.5 relative">
+              <label
+                htmlFor="confirmPassword"
+                className="text-sm font-medium text-white"
+              >
                 Confirm Password
               </label>
-              <input
-                type={showPassword2 ? "text" : "password"}
-                name="confirmPassword"
-                id="confirmPassword"
-                placeholder="Confrim your password again"
-                className="bg-gray-300 p-2 rounded text-black outline-none focus:ring-3 focus:ring-indigo-500 placeholder:text-black placeholder:text-md transition-all duration-150 ease-linear text-lg"
-                value={confirmPassword}
-                onChange={handleInputChange}
-              />
-              <span
-                onClick={togglePassword2}
-                className="absolute right-3 top-12 text-black text-xl cursor-pointer"
-              >
-                {showPassword2 ? <IoEye /> : <IoEyeOff />}
-              </span>
-            </div>
-            <div className="flex mt-4">
-              <button className="w-full p-2 text-xl bg-indigo-600 rounded-lg hover:bg-indigo-700 cursor-pointer transition-all duration-150 ease-out">
-                Sign Up
-              </button>
-            </div>
-            <div className="flex gap-2 justify-center items-center">
-              <span className=" flex gap-1">
-                Already have an account?
-                <NavLink
-                  to={"/auth/login"}
-                  className={"hover:text-indigo-500 underline transition-all"}
+              <div className="relative">
+                <input
+                  type={showPassword2 ? "text" : "password"}
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  placeholder="••••••••"
+                  className={inputClasses}
+                  value={confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword2(!showPassword2)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                 >
-                  Login
-                </NavLink>
-              </span>
+                  {showPassword2 ? <IoEye size={20} /> : <IoEyeOff size={20} />}
+                </button>
+              </div>
             </div>
+
+            <button className="w-full mt-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg shadow-lg transform transition active:scale-[0.98]">
+              Sign Up
+            </button>
+
+            <p className="text-center text-gray-400 text-sm">
+              Already have an account?{" "}
+              <NavLink
+                to="/auth/login"
+                className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4"
+              >
+                Login
+              </NavLink>
+            </p>
           </form>
         </main>
       </article>
