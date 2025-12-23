@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { IoEye, IoEyeOff } from "react-icons/io5";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { __AUTH } from "../../backend/firebaseConfig";
 
 const Login = () => {
+  let navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -20,10 +23,24 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Logic
-      console.log("Login Data:", formData);
+      //! signInWithEmailAndPassword():
+      let signedInUser = await signInWithEmailAndPassword(
+        __AUTH,
+        email,
+        password
+      );
+      //* Checking the user whether it is verified or not?
+      let emailVerified = signedInUser?.user?.emailVerified;
+      if (emailVerified === true) {
+        toast.success("Welcome Back!");
+        navigate("/");
+      } else {
+        toast.error("Please verify your email before login");
+      }
+      console.log("Signed In User:", signedInUser);
+      // console.log("Login Data:", formData);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.code.slice(5));
     }
   };
 

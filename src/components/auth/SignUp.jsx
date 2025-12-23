@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { IoEye, IoEyeOff } from "react-icons/io5";
@@ -27,20 +30,28 @@ const SignUp = () => {
     e.preventDefault();
     try {
       if (password === confirmPassword) {
+        //! createUserWithEmailAndPassword()
         const registeredUser = await createUserWithEmailAndPassword(
           __AUTH,
           email,
           password
         );
+
+        //! sendEmailVerification()
+        sendEmailVerification(registeredUser.user);
+
         console.log("Registered User:", registeredUser);
-        console.log("User Data:", formData);
+        // console.log("User Data:", formData);
+        toast.success(
+          `Email verification send to your registered email ${registeredUser.user.email}`
+        );
         toast.success("Sign Up Successfully! Redirecting...");
         navigate("/auth/login");
       } else {
         toast.error("Passwords do not match");
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.code);
     }
   };
 

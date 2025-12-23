@@ -4,6 +4,7 @@ import Home from "../components/pages/Home";
 import Login from "../components/auth/Login";
 import SignUp from "../components/auth/SignUp";
 import ForgotPassword from "../components/auth/ForgotPassword";
+import UserProfile from "../components/pages/profile/UserProfile";
 
 let myRoutes = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ let myRoutes = createBrowserRouter([
       {
         path: "/auth/forgot-password",
         element: <ForgotPassword />,
+      },
+      {
+        path: "/profile",
+        element: <UserProfile />,
       },
       {
         path: "*",
