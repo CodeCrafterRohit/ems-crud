@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthUserContext } from "../../context/AuthContextProvider";
+import { HiOutlineLogout } from "react-icons/hi";
 
 const Menu = () => {
   let { authUser, logout } = useContext(AuthUserContext);
@@ -45,7 +46,10 @@ const Menu = () => {
   let AuthenticatedUser = () => {
     return (
       <>
-        <li>
+        <li className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full border-2 border-indigo-600 flex items-center justify-center overflow-hidden bg-indigo-50">
+            {/* logic */}
+          </div>
           <NavLink
             to={"/profile"}
             className={({ isActive }) => {
@@ -62,11 +66,10 @@ const Menu = () => {
         <li>
           <button
             onClick={logout}
-            className={
-              "px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold"
-            }
+            className="px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold text-rose-600 hover:bg-rose-600 hover:text-white flex items-center gap-2"
           >
             Logout
+            <HiOutlineLogout className="text-xl" />
           </button>
         </li>
       </>
