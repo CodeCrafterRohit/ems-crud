@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 
 const ProfileSidebar = () => {
   const linkClasses = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium text-sm lg:text-base ${
+    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium text-lg ${
       isActive
         ? "bg-white text-indigo-700 shadow-lg"
         : "text-white hover:bg-indigo-50 hover:text-indigo-700"
@@ -20,7 +20,7 @@ const ProfileSidebar = () => {
   return (
     <aside className="basis-[20%] bg-indigo-700 border-r border-slate-200 h-[calc(100vh-72px)] p-6 flex flex-col justify-between">
       <nav className="flex flex-col gap-3">
-        <NavLink to="/profile" className={linkClasses}>
+        <NavLink to="/profile" className={linkClasses} end>
           <HiOutlineUser className="text-xl" />
           My Account
         </NavLink>

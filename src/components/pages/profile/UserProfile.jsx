@@ -4,7 +4,7 @@ import ProfileContent from "./ProfileContent";
 
 const UserProfile = () => {
   return (
-    <section className="flex">
+    <section className="flex pt-18">
       <ProfileSidebar />
       <ProfileContent />
     </section>
