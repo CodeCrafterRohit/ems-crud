@@ -2,10 +2,18 @@ import React, { useState } from "react";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { __AUTH } from "../../backend/firebaseConfig";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
+  //! Create an instance of the Google provider object
+  let provider = new GoogleAuthProvider();
+
   let navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,19 +37,29 @@ const Login = () => {
         email,
         password
       );
+
       //* Checking the user whether it is verified or not?
       let emailVerified = signedInUser?.user?.emailVerified;
+
       if (emailVerified === true) {
         toast.success("Welcome Back!");
         navigate("/");
       } else {
         toast.error("Please verify your email before login");
       }
+
       console.log("Signed In User:", signedInUser);
       // console.log("Login Data:", formData);
     } catch (error) {
       toast.error(error.code.slice(5));
     }
+  };
+
+  //! signInWithGoogle
+  let signInWithGoogle = async () => {
+    let googleUser = await signInWithPopup(__AUTH, provider);
+    // console.log("Google User:", googleUser);
+    navigate("/");
   };
 
   //! Reusable classes for input fields
@@ -146,6 +164,15 @@ const Login = () => {
                   Sign Up
                 </NavLink>
               </p>
+            </div>
+            <div
+              onClick={signInWithGoogle}
+              className="mt-2 flex items-center gap-2 justify-center border border-white p-2 rounded-full cursor-pointer"
+            >
+              <span>
+                <FcGoogle size={25} />
+              </span>
+              <span>Sign in with Google</span>
             </div>
           </form>
         </main>

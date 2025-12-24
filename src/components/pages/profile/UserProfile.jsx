@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import ProfileSidebar from "./ProfileSidebar";
+import ProfileContent from "./ProfileContent";
 
 const UserProfile = () => {
   return (
-    <div>UserProfile</div>
-  )
-}
+    <section className="flex">
+      <ProfileSidebar />
+      <ProfileContent />
+    </section>
+  );
+};
 
-export default UserProfile
+export default UserProfile;

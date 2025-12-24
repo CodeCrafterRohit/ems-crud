@@ -5,6 +5,7 @@ import { HiOutlineLogout } from "react-icons/hi";
 
 const Menu = () => {
   let { authUser, logout } = useContext(AuthUserContext);
+  // console.log("authUser", authUser);
 
   //! Anonoymous User => Login, SignUp
   let AnonymousUser = () => {
@@ -48,7 +49,7 @@ const Menu = () => {
       <>
         <li className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full border-2 border-indigo-600 flex items-center justify-center overflow-hidden bg-indigo-50">
-            {/* logic */}
+            <img src={authUser?.photoURL} alt={authUser?.displayName} />
           </div>
           <NavLink
             to={"/profile"}
@@ -60,7 +61,7 @@ const Menu = () => {
               } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
             }}
           >
-            Profile
+            {authUser?.displayName}
           </NavLink>
         </li>
         <li>

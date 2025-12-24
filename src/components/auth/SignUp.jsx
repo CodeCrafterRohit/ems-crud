@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
@@ -39,6 +40,13 @@ const SignUp = () => {
 
         //! sendEmailVerification()
         sendEmailVerification(registeredUser.user);
+
+        //! updateProfile()
+        await updateProfile(registeredUser.user, {
+          displayName: username,
+          photoURL:
+            "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg",
+        });
 
         console.log("Registered User:", registeredUser);
         // console.log("User Data:", formData);
