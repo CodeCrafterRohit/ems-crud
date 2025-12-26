@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaEdit, FaUserSlash } from "react-icons/fa";
 import { HiOutlineDuplicate } from "react-icons/hi";
 import { TbPhotoEdit } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
+import { AuthUserContext } from "../../../context/AuthContextProvider";
 
 const MyAccount = () => {
-  // Logic here
+  let { authUser } = useContext(AuthUserContext);
+  console.log(authUser);
 
   return (
     <div className="flex flex-col gap-4">
@@ -13,7 +15,7 @@ const MyAccount = () => {
         <div className="absolute top-3 left-10 flex items-center gap-6">
           <div className="relative">
             <img
-              src=""
+              src={authUser?.photoURL}
               alt="Profile"
               className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover bg-white"
             />
@@ -25,8 +27,10 @@ const MyAccount = () => {
             </NavLink>
           </div>
           <div className="mb-2">
-            <h1 className="text-3xl font-bold text-white mb-2">Display Name</h1>
-            <p className="text-white text-lg font-medium">Email</p>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              {authUser?.displayName}
+            </h1>
+            <p className="text-white text-lg font-medium">{authUser?.email}</p>
           </div>
         </div>
       </header>

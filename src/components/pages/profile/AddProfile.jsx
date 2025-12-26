@@ -1,7 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { HiOutlineSave, HiOutlineUserCircle } from "react-icons/hi";
+import Languages from "./json/languages.json";
+import { Country, State, City } from "country-state-city";
 
 const AddProfile = () => {
+  //! State for userDetails
+  let [userFormData, setUserFormData] = useState({
+    fullName: "",
+    contactNumber: "",
+    gender: "",
+    dob: "",
+    age: "",
+    lang: "",
+    country: "",
+    state: "",
+    city: "",
+    address: "",
+  });
+
+  //! State for countryCode
+  let [countryCode, setCountryCode] = useState("");
+
+  //! State for stateCode
+  let [stateCode, setStateCode] = useState("");
+
+  //! Destructure the userFormData
+  let {
+    fullName,
+    contactNumber,
+    gender,
+    dob,
+    age,
+    lang,
+    country,
+    state,
+    city,
+    address,
+  } = userFormData;
+
+  //! handleInputChange
+  let handleInputChange = (e) => {
+    let { name, value } = e.target;
+    setUserFormData({ ...userFormData, [name]: value });
+  };
+
+  let handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+    } catch (error) {
+      console.log("Error while adding user:", error);
+      toast.error(error.message);
+    }
+  };
   return (
     <div className="w-full h-full">
       <div className="flex justify-between items-center mb-5 border-b border-slate-200 pb-4">
@@ -11,7 +62,7 @@ const AddProfile = () => {
         </h2>
       </div>
 
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-bold text-indigo-900 uppercase ml-1">
@@ -21,6 +72,8 @@ const AddProfile = () => {
               type="text"
               placeholder="e.g. John Doe"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
+              value={fullName}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -32,6 +85,8 @@ const AddProfile = () => {
               type="tel"
               placeholder="+91 00000 00000"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-900 shadow-sm"
+              value={contactNumber}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -46,6 +101,8 @@ const AddProfile = () => {
                   name="gender"
                   value="male"
                   className="w-5 h-5 cursor-pointer accent-indigo-600 transition-all"
+                  checked={gender === "male"}
+                  onChange={handleInputChange}
                 />
                 <span className="text-slate-700 font-medium group-hover:text-indigo-600 transition-colors">
                   Male
@@ -58,6 +115,8 @@ const AddProfile = () => {
                   name="gender"
                   value="female"
                   className="w-5 h-5 cursor-pointer accent-indigo-600 transition-all"
+                  checked={gender === "female"}
+                  onChange={handleInputChange}
                 />
                 <span className="text-slate-700 font-medium group-hover:text-indigo-600 transition-colors">
                   Female
@@ -70,6 +129,8 @@ const AddProfile = () => {
                   name="gender"
                   value="other"
                   className="w-5 h-5 cursor-pointer accent-indigo-600 transition-all"
+                  checked={gender === "other"}
+                  onChange={handleInputChange}
                 />
                 <span className="text-slate-700 font-medium group-hover:text-indigo-600 transition-colors">
                   Other
@@ -87,6 +148,8 @@ const AddProfile = () => {
             <input
               type="date"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 cursor-pointer shadow-sm"
+              value={dob}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -98,6 +161,8 @@ const AddProfile = () => {
               type="number"
               placeholder="Years"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
+              value={age}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -109,7 +174,13 @@ const AddProfile = () => {
               type="text"
               placeholder="e.g. Gujarati, English"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
+              list="languages"
             />
+            <datalist id="languages" value={lang} onChange={handleInputChange}>
+              {Languages.map((language, index) => {
+                return <option key={index}>{language}</option>;
+              })}
+            </datalist>
           </div>
         </div>
 
@@ -122,7 +193,22 @@ const AddProfile = () => {
               type="text"
               placeholder="India"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
+              list="countries"
+              value={country}
+              onChange={(e) => {
+                const selectedCountry = Country.getAllCountries().find(
+                  (c) => c.name === e.target.value
+                );
+                setUserFormData({ ...userFormData, country: e.target.value });
+                setCountryCode(selectedCountry?.isoCode || "");
+                setStateCode("");
+              }}
             />
+            <datalist id="countries">
+              {Country.getAllCountries().map((country) => (
+                <option key={country.isoCode} value={country.name} />
+              ))}
+            </datalist>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -133,7 +219,21 @@ const AddProfile = () => {
               type="text"
               placeholder="e.g. Gujarat"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
+              list="states"
+              value={state}
+              onChange={(e) => {
+                const selectedState = State.getStatesOfCountry(
+                  countryCode
+                ).find((s) => s.name === e.target.value);
+                setUserFormData({ ...userFormData, state: e.target.value });
+                setStateCode(selectedState?.isoCode || "");
+              }}
             />
+            <datalist id="states">
+              {State.getStatesOfCountry(countryCode).map((state) => (
+                <option key={state.isoCode} value={state.name} />
+              ))}
+            </datalist>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -144,7 +244,15 @@ const AddProfile = () => {
               type="text"
               placeholder="e.g. Ahmedabad"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
+              list="cities"
+              value={city}
+              onChange={handleInputChange}
             />
+            <datalist id="cities">
+              {City.getCitiesOfState(countryCode, stateCode).map((city) => (
+                <option key={city.name} value={city.name} />
+              ))}
+            </datalist>
           </div>
         </div>
 
