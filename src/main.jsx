@@ -6,12 +6,15 @@ import { RouterProvider } from "react-router-dom";
 import myRoutes from "./routes/routes";
 import "./index.css";
 import AuthContextProvider from "./context/AuthContextProvider";
+import FetchUserContext from "./context/FetchUserContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <>
     <AuthContextProvider>
-      <Toaster />
-      <RouterProvider router={myRoutes} />
+      <FetchUserContext>
+        <Toaster />
+        <RouterProvider router={myRoutes} />
+      </FetchUserContext>
     </AuthContextProvider>
   </>
 );

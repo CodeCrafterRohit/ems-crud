@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { HiOutlineSave, HiOutlineUserCircle } from "react-icons/hi";
 import Languages from "./json/languages.json";
 import { Country, State, City } from "country-state-city";
+import { doc, setDoc } from "firebase/firestore";
+import { __DB } from "../../../backend/firebaseConfig";
+import { AuthUserContext } from "../../../context/AuthContextProvider";
+import { useNavigate } from "react-router-dom";
 
 const AddProfile = () => {
+  let navigate = useNavigate();
+  let { authUser } = useContext(AuthUserContext);
+  let uid = authUser?.uid;
+
   //! State for userDetails
   let [userFormData, setUserFormData] = useState({
     fullName: "",
@@ -18,6 +26,9 @@ const AddProfile = () => {
     city: "",
     address: "",
   });
+
+  //! State for loading
+  let [loading, setLoading] = useState(false);
 
   //! State for countryCode
   let [countryCode, setCountryCode] = useState("");
@@ -45,14 +56,56 @@ const AddProfile = () => {
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  let handleSubmit = (e) => {
+  let handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      console.log("User Form Data:", userFormData);
+      //~ Storing the userFormData inside the firebase database
+      //! Step-1: Create the document reference inside the database (firestore database)
+      //? Syntax: db(db_instance, "collection_name", uid)
+
+      let userDocRef = doc(__DB, "users_details", uid);
+
+      //! Step-2: Create the payload (actual data which is sent to be the database)
+      //~ Extracting the optional data which is sent with payload (email, photoURL, displayName, uid)
+      let { email, photoURL, displayName } = authUser;
+
+      let payload = {
+        ...userFormData,
+        email,
+        photoURL,
+        displayName,
+        uid,
+      };
+
+      //! Step-3: Add the payload inside the database with help of setDoc() function
+      //? Syntax: setDoc(db_ref, payload);
+      //? Return Type: Promise
+      await setDoc(userDocRef, payload);
+      toast.success("User Details Added Successfully");
+      navigate("/profile");
     } catch (error) {
       console.log("Error while adding user:", error);
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  //! Clear Form Data Logic
+  let clearFormData = () => {
+    setUserFormData({
+      fullName: "",
+      contactNumber: "",
+      gender: "",
+      dob: "",
+      age: "",
+      lang: "",
+      country: "",
+      state: "",
+      city: "",
+      address: "",
+    });
   };
   return (
     <div className="w-full h-full">
@@ -283,7 +336,8 @@ const AddProfile = () => {
 
         <div className="flex justify-end items-center gap-4 pt-6 border-t border-slate-100">
           <button
-            type="reset"
+            onClick={clearFormData}
+            type="button"
             className="px-8 py-3 rounded-xl font-bold bg-rose-500 hover:bg-rose-600 cursor-pointer text-white transition-all duration-200 ease-linear"
           >
             Clear
@@ -293,7 +347,7 @@ const AddProfile = () => {
             className="px-12 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 cursor-pointer transition-all flex items-center gap-2"
           >
             <HiOutlineSave className="text-xl" />
-            Save Profile
+            {loading ? "Saving..." : "Save Profile"}
           </button>
         </div>
       </form>

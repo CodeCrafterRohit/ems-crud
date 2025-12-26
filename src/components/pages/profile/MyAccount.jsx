@@ -4,10 +4,25 @@ import { HiOutlineDuplicate } from "react-icons/hi";
 import { TbPhotoEdit } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
 import { AuthUserContext } from "../../../context/AuthContextProvider";
+import { BackendUserContext } from "../../../context/FetchUserContext";
 
 const MyAccount = () => {
   let { authUser } = useContext(AuthUserContext);
-  console.log(authUser);
+  let { userData } = useContext(BackendUserContext);
+
+  //! Destructure the userData
+  let {
+    fullName,
+    contactNumber,
+    gender,
+    dob,
+    age,
+    lang,
+    country,
+    state,
+    city,
+    address,
+  } = userData;
 
   return (
     <div className="flex flex-col gap-4">
@@ -35,183 +50,193 @@ const MyAccount = () => {
         </div>
       </header>
 
-      <div className="w-full mt-2">
-        <div className="flex justify-between items-center mb-10">
-          <h2 className="text-2xl font-bold text-indigo-900 uppercase tracking-wide">
-            Personal Details
-          </h2>
-          <NavLink
-            to={"/profile/add-profile"}
-            className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all font-semibold shadow-md shadow-indigo-100"
-          >
-            <span>Edit</span>
-            <FaEdit />
-          </NavLink>
+      {userData === null ? (
+        <div>
+          <h1>User Details Not Found!</h1>
         </div>
+      ) : (
+        <div className="w-full mt-2">
+          <div className="flex justify-between items-center mb-10">
+            <h2 className="text-2xl font-bold text-indigo-900 uppercase tracking-wide">
+              Personal Details
+            </h2>
+            <NavLink
+              to={"/profile/add-profile"}
+              className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all font-semibold shadow-md shadow-indigo-100"
+            >
+              <span>Edit</span>
+              <FaEdit />
+            </NavLink>
+          </div>
 
-        <div className="flex flex-col gap-6">
-          <div className="flex gap-4">
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                Name
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">
-                  name
+          <div className="flex flex-col gap-6">
+            <div className="flex gap-4">
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  Name
                 </span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {fullName}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                Contact
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">CN</span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  Contact
+                </span>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {contactNumber}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                Gender
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
                   Gender
                 </span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {gender}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex gap-4">
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                DOB
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">dob</span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                Age
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">age</span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                Language
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">
-                  Lang
+            <div className="flex gap-4">
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  DOB
                 </span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {dob}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  Age
+                </span>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {age}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  Language
+                </span>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {lang}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex gap-4">
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                Country
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">
-                  country
+            <div className="flex gap-4">
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  Country
                 </span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {country}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  State
+                </span>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {state}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+                <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                  City
+                </span>
+                <div className="flex justify-between items-center w-full px-4">
+                  <span className="text-slate-700 font-medium truncate">
+                    {city}
+                  </span>
+                  <button
+                    className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Copy to clipboard"
+                  >
+                    <HiOutlineDuplicate size={18} />
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                State
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">
-                  state
-                </span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-                City
-              </span>
-              <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium truncate">
-                  city
-                </span>
-                <button
-                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                  title="Copy to clipboard"
-                >
-                  <HiOutlineDuplicate size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
 
-          <div className="w-full flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
-            <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
-              Address
-            </span>
-            <div className="flex justify-between items-center w-full px-4">
-              <span className="text-slate-700 font-medium">
-                Your Address Here
+            <div className="w-full flex items-center bg-slate-100 rounded-xl border border-slate-200 overflow-hidden shadow-sm group">
+              <span className="font-bold text-white bg-indigo-600 py-4 px-6 min-w-28 text-center border-r border-slate-200">
+                Address
               </span>
-              <button className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer">
-                <HiOutlineDuplicate size={18} />
-              </button>
+              <div className="flex justify-between items-center w-full px-4">
+                <span className="text-slate-700 font-medium">{address}</span>
+                <button className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer">
+                  <HiOutlineDuplicate size={18} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
