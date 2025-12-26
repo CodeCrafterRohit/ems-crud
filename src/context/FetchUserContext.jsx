@@ -9,7 +9,7 @@ export let BackendUserContext = createContext(null);
 const FetchUserContext = ({ children }) => {
   let { authUser } = useContext(AuthUserContext);
   //! State for storing the userData which is coming from the firebase
-  let [userData, setUserData] = useState({});
+  let [userData, setUserData] = useState(null);
   let uid = authUser?.uid;
 
   //! Logic For Fetch User Details from database
@@ -31,7 +31,7 @@ const FetchUserContext = ({ children }) => {
     }
     fetchUserDetails();
   }, [uid]);
-  
+
   return (
     <BackendUserContext.Provider value={{ userData }}>
       {children}

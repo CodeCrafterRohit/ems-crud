@@ -6,25 +6,28 @@ import { Country, State, City } from "country-state-city";
 import { doc, setDoc } from "firebase/firestore";
 import { __DB } from "../../../backend/firebaseConfig";
 import { AuthUserContext } from "../../../context/AuthContextProvider";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AddProfile = () => {
   let navigate = useNavigate();
+  let location = useLocation();
   let { authUser } = useContext(AuthUserContext);
   let uid = authUser?.uid;
 
+  const isEditing = !!location?.state;
+
   //! State for userDetails
   let [userFormData, setUserFormData] = useState({
-    fullName: "",
-    contactNumber: "",
-    gender: "",
-    dob: "",
-    age: "",
-    lang: "",
-    country: "",
-    state: "",
-    city: "",
-    address: "",
+    fullName: location?.state?.fullName,
+    contactNumber: location?.state?.contactNumber,
+    gender: location?.state?.gender,
+    dob: location?.state?.dob,
+    age: location?.state?.age,
+    lang: location?.state?.lang,
+    country: location?.state?.country,
+    state: location?.state?.state,
+    city: location?.state?.city,
+    address: location?.state?.address,
   });
 
   //! State for loading
@@ -82,7 +85,11 @@ const AddProfile = () => {
       //? Syntax: setDoc(db_ref, payload);
       //? Return Type: Promise
       await setDoc(userDocRef, payload);
-      toast.success("User Details Added Successfully");
+      toast.success(
+        isEditing
+          ? "User Details Updated Successfully"
+          : "User Details Added Successfully"
+      );
       navigate("/profile");
     } catch (error) {
       console.log("Error while adding user:", error);
@@ -107,6 +114,7 @@ const AddProfile = () => {
       address: "",
     });
   };
+
   return (
     <div className="w-full h-full">
       <div className="flex justify-between items-center mb-5 border-b border-slate-200 pb-4">
@@ -347,7 +355,13 @@ const AddProfile = () => {
             className="px-12 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 cursor-pointer transition-all flex items-center gap-2"
           >
             <HiOutlineSave className="text-xl" />
-            {loading ? "Saving..." : "Save Profile"}
+            {loading
+              ? isEditing
+                ? "Updating..."
+                : "Saving..."
+              : isEditing
+              ? "Update Profile"
+              : "Save Profile"}
           </button>
         </div>
       </form>

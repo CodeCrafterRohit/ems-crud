@@ -1,28 +1,26 @@
 import React, { useContext } from "react";
 import { FaEdit, FaUserSlash } from "react-icons/fa";
-import { HiOutlineDuplicate } from "react-icons/hi";
+import {
+  HiOutlineDuplicate,
+  HiOutlineExclamationCircle,
+  HiOutlineUserAdd,
+} from "react-icons/hi";
 import { TbPhotoEdit } from "react-icons/tb";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthUserContext } from "../../../context/AuthContextProvider";
 import { BackendUserContext } from "../../../context/FetchUserContext";
+import toast from "react-hot-toast";
 
 const MyAccount = () => {
+  let navigate = useNavigate();
   let { authUser } = useContext(AuthUserContext);
   let { userData } = useContext(BackendUserContext);
 
-  //! Destructure the userData
-  let {
-    fullName,
-    contactNumber,
-    gender,
-    dob,
-    age,
-    lang,
-    country,
-    state,
-    city,
-    address,
-  } = userData;
+  //! handleCopy
+  let handleCopy = (value) => {
+    window.navigator.clipboard.writeText(value);
+    toast.success("Copied to clipboard");
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -50,9 +48,37 @@ const MyAccount = () => {
         </div>
       </header>
 
-      {userData === null ? (
-        <div>
-          <h1>User Details Not Found!</h1>
+      {userData == null ? (
+        <div className="w-2xl mx-auto h-full flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-6 w-full transition-all hover:border-indigo-300 group">
+            <div className="relative mb-5">
+              <div className="w-40 h-40 rounded-full bg-white shadow-inner flex items-center justify-center border-4 border-white overflow-hidden">
+                <HiOutlineUserAdd className="text-7xl text-slate-200 group-hover:text-indigo-200 transition-colors" />
+              </div>
+              <div className="absolute -bottom-2 -right-2 bg-amber-400 p-2 rounded-full border-4 border-white text-white">
+                <HiOutlineExclamationCircle size={24} />
+              </div>
+            </div>
+
+            <div className="text-center mb-5">
+              <h3 className="text-2xl font-bold text-indigo-900 mb-2">
+                No Profile Details Found
+              </h3>
+              <p className="text-slate-500 mx-auto">
+                It looks like you haven't set up your personal details yet.{" "}
+                <br />
+                Complete your profile to get started.
+              </p>
+            </div>
+
+            <button
+              onClick={() => navigate("/profile/add-profile")}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-10 rounded-2xl text-lg transition-all shadow-xl shadow-indigo-100 active:scale-95 flex items-center gap-3 cursor-pointer group-hover:-translate-y-1"
+            >
+              <HiOutlineUserAdd className="text-2xl" />
+              Add User Details
+            </button>
+          </div>
         </div>
       ) : (
         <div className="w-full mt-2">
@@ -62,6 +88,7 @@ const MyAccount = () => {
             </h2>
             <NavLink
               to={"/profile/add-profile"}
+              state={userData}
               className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all font-semibold shadow-md shadow-indigo-100"
             >
               <span>Edit</span>
@@ -77,9 +104,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {fullName}
+                    {userData?.fullName}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.fullName)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -93,9 +121,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {contactNumber}
+                    {userData?.contactNumber}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.contactNumber)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -109,9 +138,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {gender}
+                    {userData?.gender}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.gender)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -128,9 +158,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {dob}
+                    {userData?.dob}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.dob)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -144,9 +175,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {age}
+                    {userData?.age}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.age)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -160,9 +192,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {lang}
+                    {userData?.lang}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.lang)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -179,9 +212,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {country}
+                    {userData?.country}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.country)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -195,9 +229,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {state}
+                    {userData?.state}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.state)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -211,9 +246,10 @@ const MyAccount = () => {
                 </span>
                 <div className="flex justify-between items-center w-full px-4">
                   <span className="text-slate-700 font-medium truncate">
-                    {city}
+                    {userData?.city}
                   </span>
                   <button
+                    onClick={() => handleCopy(userData?.city)}
                     className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Copy to clipboard"
                   >
@@ -228,8 +264,13 @@ const MyAccount = () => {
                 Address
               </span>
               <div className="flex justify-between items-center w-full px-4">
-                <span className="text-slate-700 font-medium">{address}</span>
-                <button className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer">
+                <span className="text-slate-700 font-medium">
+                  {userData?.address}
+                </span>
+                <button
+                  onClick={() => handleCopy(userData?.address)}
+                  className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                >
                   <HiOutlineDuplicate size={18} />
                 </button>
               </div>
