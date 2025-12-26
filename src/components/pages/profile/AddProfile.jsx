@@ -48,6 +48,7 @@ const AddProfile = () => {
   let handleSubmit = (e) => {
     e.preventDefault();
     try {
+      console.log("User Form Data:", userFormData);
     } catch (error) {
       console.log("Error while adding user:", error);
       toast.error(error.message);
@@ -73,6 +74,7 @@ const AddProfile = () => {
               placeholder="e.g. John Doe"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
               value={fullName}
+              name="fullName"
               onChange={handleInputChange}
             />
           </div>
@@ -86,6 +88,7 @@ const AddProfile = () => {
               placeholder="+91 00000 00000"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-900 shadow-sm"
               value={contactNumber}
+              name="contactNumber"
               onChange={handleInputChange}
             />
           </div>
@@ -149,6 +152,7 @@ const AddProfile = () => {
               type="date"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 cursor-pointer shadow-sm"
               value={dob}
+              name="dob"
               onChange={handleInputChange}
             />
           </div>
@@ -162,6 +166,7 @@ const AddProfile = () => {
               placeholder="Years"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
               value={age}
+              name="age"
               onChange={handleInputChange}
             />
           </div>
@@ -175,8 +180,11 @@ const AddProfile = () => {
               placeholder="e.g. Gujarati, English"
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
               list="languages"
+              name="lang"
+              value={lang}
+              onChange={handleInputChange}
             />
-            <datalist id="languages" value={lang} onChange={handleInputChange}>
+            <datalist id="languages">
               {Languages.map((language, index) => {
                 return <option key={index}>{language}</option>;
               })}
@@ -195,6 +203,7 @@ const AddProfile = () => {
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
               list="countries"
               value={country}
+              name="country"
               onChange={(e) => {
                 const selectedCountry = Country.getAllCountries().find(
                   (c) => c.name === e.target.value
@@ -221,6 +230,7 @@ const AddProfile = () => {
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
               list="states"
               value={state}
+              name="state"
               onChange={(e) => {
                 const selectedState = State.getStatesOfCountry(
                   countryCode
@@ -246,6 +256,7 @@ const AddProfile = () => {
               className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 shadow-sm"
               list="cities"
               value={city}
+              name="city"
               onChange={handleInputChange}
             />
             <datalist id="cities">
@@ -264,6 +275,9 @@ const AddProfile = () => {
             placeholder="Enter your full home address here..."
             rows="2"
             className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition-all text-slate-700 resize-none shadow-sm"
+            value={address}
+            name="address"
+            onChange={handleInputChange}
           ></textarea>
         </div>
 
