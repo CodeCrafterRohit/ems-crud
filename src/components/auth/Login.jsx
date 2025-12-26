@@ -167,7 +167,7 @@ const Login = () => {
             </div>
             <div
               onClick={signInWithGoogle}
-              className="mt-2 flex items-center gap-2 justify-center border border-white p-2 rounded-full cursor-pointer"
+              className="mt-2 flex items-center gap-2 justify-center border border-white p-2 rounded-full cursor-pointer transition-all duration-100 ease-linear"
             >
               <span>
                 <FcGoogle size={25} />

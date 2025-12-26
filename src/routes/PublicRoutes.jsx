@@ -6,7 +6,7 @@ const PublicRoutes = ({ children }) => {
   let { authUser } = useContext(AuthUserContext);
 
   if (authUser) {
-    return <Navigate to={"/profile"} replace />;
+    return <Navigate to={"/"} replace />;
   } else {
     return <>{children}</>;
   }

@@ -18,37 +18,37 @@ const ProfileSidebar = () => {
     }`;
 
   return (
-    <aside className="basis-[20%] bg-indigo-700 border-r border-slate-200 h-[calc(100vh-72px)] p-6 flex flex-col justify-between">
+    <aside className="basis-[20%] bg-indigo-700 border-r border-slate-200 h-[calc(100vh-80px)] p-6 flex flex-col justify-between">
       <nav className="flex flex-col gap-3">
         <NavLink to="/profile" className={linkClasses} end>
-          <HiOutlineUser className="text-xl" />
+          <HiOutlineUser className="text-2xl" />
           My Account
         </NavLink>
 
         <NavLink to="add-profile" className={linkClasses}>
-          <HiOutlineUserPlus className="text-xl" />
+          <HiOutlineUserPlus className="text-2xl" />
           Add Profile
         </NavLink>
 
         <NavLink to="update-photo" className={linkClasses}>
-          <HiOutlineCamera className="text-xl" />
+          <HiOutlineCamera className="text-2xl" />
           Update Profile Photo
         </NavLink>
 
         <NavLink to="change-password" className={linkClasses}>
-          <HiOutlineLockClosed className="text-xl" />
+          <HiOutlineLockClosed className="text-2xl" />
           Change Password
         </NavLink>
 
         <NavLink to="settings" className={linkClasses}>
-          <HiOutlineCog className="text-xl" />
+          <HiOutlineCog className="text-2xl" />
           Settings
         </NavLink>
       </nav>
 
       <div className="pt-6 border-t border-slate-100">
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:text-rose-600 bg-rose-600 text-white font-semibold hover:bg-rose-50 transition-all duration-300">
-          <HiOutlineTrash className="text-xl" />
+        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:text-rose-600 bg-rose-600 text-white font-semibold text-lg hover:bg-rose-50 transition-all duration-300">
+          <HiOutlineTrash className="text-2xl" />
           Delete Account
         </button>
       </div>
