@@ -45,7 +45,7 @@ const Home = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group">
+          <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group mt-4">
             <div className="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 transition-colors duration-300">
               <FaUsers className="text-2xl text-indigo-600 group-hover:text-white transition-colors duration-300" />
             </div>
@@ -62,8 +62,8 @@ const Home = () => {
             </NavLink>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group">
-            <div className="w-14 h-14 bg-violet-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-violet-600 transition-colors duration-300">
+          <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group mt-4">
+            <div className="w-14 h-14 bg-violet-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-violet-600 transition-colors duration-300 ">
               <FaUserCog className="text-2xl text-violet-600 group-hover:text-white transition-colors duration-300" />
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-3">
@@ -81,7 +81,7 @@ const Home = () => {
             </NavLink>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group">
+          <div className="bg-white p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group mt-4">
             <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-600 transition-colors duration-300">
               <FaChartLine className="text-2xl text-slate-600 group-hover:text-white transition-colors duration-300" />
             </div>
@@ -92,6 +92,22 @@ const Home = () => {
             <span className="text-green-600 font-semibold cursor-pointer hover:text-green-800 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
               View Reports <FaArrowRight className="text-sm" />
             </span>
+          </div>
+        </div>
+
+        {/* New Members Automatically Added Below */}
+        <div className="space-y-8 animate-fade-in-up">
+          <div className="flex flex-col items-center text-center space-y-2">
+            <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold tracking-wide uppercase">
+              New Arrivals
+            </span>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Meet Our Latest Members
+            </h2>
+            <p className="text-gray-500 max-w-xl">
+              We are growing fast! Check out the newest additions to our
+              talented team.
+            </p>
           </div>
         </div>
       </div>

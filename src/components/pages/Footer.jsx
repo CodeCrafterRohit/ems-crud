@@ -99,7 +99,7 @@ const Footer = () => {
                 <span>
                   React Warriors,
                   <br />
-                  Extra-Minded Legends, Code Kutch.
+                  Double-Minded Legends, <br /> Code Kutch.
                 </span>
               </li>
               <li className="flex items-center gap-3">
