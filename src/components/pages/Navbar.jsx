@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "./Logo";
 import Menu from "./Menu";
 
 const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
-    <nav className="fixed top-0 z-50 w-full h-20 bg-white shadow-lg flex justify-between items-center px-10 border-b border-gray-100">
+    <nav
+      className={`fixed top-0 z-50 w-full h-20 flex justify-between items-center px-10 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/50 backdrop-blur-md shadow-lg border-indigo-100"
+          : "bg-white border-transparent"
+      }`}
+    >
       <Logo />
       <Menu />
     </nav>

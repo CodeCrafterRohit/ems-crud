@@ -8,35 +8,25 @@ const Menu = () => {
   let { authUser, logout } = useContext(AuthUserContext);
   let { userData } = useContext(BackendUserContext);
 
+  let linkClasses = ({ isActive }) => {
+    return `${
+      isActive
+        ? "bg-indigo-700 text-white shadow-md"
+        : "text-indigo-600 hover:bg-indigo-100"
+    } px-4 py-2 text-base cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
+  };
+
   //! Anonoymous User => Login, SignUp
   let AnonymousUser = () => {
     return (
       <>
         <li>
-          <NavLink
-            to={"/auth/login"}
-            className={({ isActive }) => {
-              return `${
-                isActive
-                  ? "bg-indigo-700 text-white shadow-md"
-                  : "text-indigo-600 hover:bg-indigo-50"
-              } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
-            }}
-          >
+          <NavLink to={"/auth/login"} className={linkClasses}>
             Login
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to={"/auth/sign-up"}
-            className={({ isActive }) => {
-              return `${
-                isActive
-                  ? "bg-indigo-700 text-white shadow-md"
-                  : "text-indigo-600 hover:bg-indigo-50"
-              } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
-            }}
-          >
+          <NavLink to={"/auth/sign-up"} className={linkClasses}>
             Sign Up
           </NavLink>
         </li>
@@ -50,16 +40,7 @@ const Menu = () => {
       <>
         {userData?.role === "admin" && (
           <li>
-            <NavLink
-              to={"/profile"}
-              className={({ isActive }) => {
-                return `${
-                  isActive
-                    ? "bg-indigo-700 text-white shadow-md"
-                    : "text-indigo-600 hover:bg-indigo-50"
-                } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
-              }}
-            >
+            <NavLink to={"/"} className={linkClasses}>
               Admin
             </NavLink>
           </li>
@@ -72,23 +53,14 @@ const Menu = () => {
               alt={authUser?.displayName}
             />
           </div>
-          <NavLink
-            to={"/profile"}
-            className={({ isActive }) => {
-              return `${
-                isActive
-                  ? "bg-indigo-700 text-white shadow-md"
-                  : "text-indigo-600 hover:bg-indigo-50"
-              } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
-            }}
-          >
+          <NavLink to={"/profile"} className={linkClasses}>
             {authUser?.displayName}
           </NavLink>
         </li>
         <li>
           <button
             onClick={logout}
-            className="px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold text-rose-600 hover:bg-rose-600 hover:text-white flex items-center gap-2"
+            className="px-4 py-2 text-base cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold text-rose-600 hover:bg-rose-600 hover:text-white flex items-center gap-2"
           >
             Logout
             <HiOutlineLogout className="text-xl" />
@@ -98,19 +70,10 @@ const Menu = () => {
     );
   };
   return (
-    <header className="w-[40%] h-full">
-      <ul className="w-full h-full flex justify-evenly items-center">
+    <header className="h-full">
+      <ul className="h-full flex gap-4 items-center">
         <li>
-          <NavLink
-            to={"/"}
-            className={({ isActive }) => {
-              return `${
-                isActive
-                  ? "bg-indigo-700 text-white shadow-md"
-                  : "text-indigo-600 hover:bg-indigo-50"
-              } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
-            }}
-          >
+          <NavLink to={"/"} className={linkClasses}>
             Home
           </NavLink>
         </li>
