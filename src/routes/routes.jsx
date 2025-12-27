@@ -59,7 +59,7 @@ let myRoutes = createBrowserRouter([
             element: (
               <PrivateRoutes>
                 <MyAccount />
-              </PrivateRoutes>
+               </PrivateRoutes>
             ),
           },
           {

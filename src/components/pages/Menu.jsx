@@ -65,8 +65,12 @@ const Menu = () => {
           </li>
         )}
         <li className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full border-2 border-indigo-600 flex items-center justify-center overflow-hidden bg-indigo-50">
-            <img src={authUser?.photoURL} alt={authUser?.displayName} />
+          <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden bg-indigo-50">
+            <img
+              className="w-full h-full object-cover"
+              src={authUser?.photoURL}
+              alt={authUser?.displayName}
+            />
           </div>
           <NavLink
             to={"/profile"}

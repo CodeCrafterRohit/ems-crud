@@ -11,9 +11,9 @@ import { NavLink } from "react-router-dom";
 
 const ProfileSidebar = () => {
   const linkClasses = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium text-lg ${
+    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-base ${
       isActive
-        ? "bg-white text-indigo-700 shadow-lg"
+        ? "bg-white text-indigo-700 shadow-sm border-l-4 border-indigo-900"
         : "text-white hover:bg-indigo-50 hover:text-indigo-700"
     }`;
 
@@ -47,7 +47,7 @@ const ProfileSidebar = () => {
       </nav>
 
       <div className="pt-6 border-t border-slate-100">
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:text-rose-600 bg-rose-600 text-white font-semibold text-lg hover:bg-rose-50 transition-all duration-300">
+        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:text-rose-600 bg-rose-600 text-white font-semibold text-base hover:bg-rose-100 transition-all duration-300">
           <HiOutlineTrash className="text-2xl" />
           Delete Account
         </button>

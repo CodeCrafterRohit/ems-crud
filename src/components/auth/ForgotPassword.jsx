@@ -26,7 +26,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <section className="w-full grow flex justify-center items-center p-4 bg-gray-50">
+    <section className="w-full min-h-screen grow flex justify-center items-center p-4 bg-gray-50">
       <article className="w-full max-w-lg bg-gray-900 text-white shadow-2xl rounded-2xl overflow-hidden">
         <header className="bg-indigo-700 py-6 text-center">
           <h1 className="text-3xl font-bold tracking-tight">Reset Password</h1>

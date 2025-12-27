@@ -1,24 +1,26 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthUserContext } from "../context/AuthContextProvider";
+import { BackendUserContext } from "../context/FetchUserContext";
 import { Navigate } from "react-router-dom";
 import Spinner from "../helper/Spinner";
 
 const PrivateRoutes = ({ children }) => {
-  const { authUser, loading } = useContext(AuthUserContext);
-  const [showApp, setShowApp] = useState(false);
+  const { authUser, loading: authLoading } = useContext(AuthUserContext);
+  const { userDataLoading } = useContext(BackendUserContext);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
+  //! Minimum animation time for the spinner
   useEffect(() => {
-    // Once Firebase says loading is done and user exists
-    if (!loading && authUser) {
-      // Wait 3 seconds for the Spinner animation to reach the Tick Mark
-      const timer = setTimeout(() => {
-        setShowApp(true);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [loading, authUser]);
+    const timer = setTimeout(() => {
+      setMinTimeElapsed(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (loading || (authUser && !showApp)) {
+  const isLoading =
+    authLoading || (authUser && userDataLoading) || !minTimeElapsed;
+
+  if (isLoading) {
     return (
       <div
         key="loader-overlay"
