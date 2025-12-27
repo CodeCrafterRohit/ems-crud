@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { __AUTH } from "../../backend/firebaseConfig";
 import { FcGoogle } from "react-icons/fc";
+import Spinner from "../../helper/Spinner";
 
 const Login = () => {
   //! Create an instance of the Google provider object
@@ -21,6 +22,8 @@ const Login = () => {
     password: "",
   });
 
+  let [loading, setLoading] = useState(false);
+
   const { email, password } = formData;
 
   const handleInputChange = (e) => {
@@ -30,6 +33,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       //! signInWithEmailAndPassword():
       let signedInUser = await signInWithEmailAndPassword(
@@ -52,6 +56,8 @@ const Login = () => {
       // console.log("Login Data:", formData);
     } catch (error) {
       toast.error(error.code.slice(5));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -177,6 +183,16 @@ const Login = () => {
           </form>
         </main>
       </article>
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-999">
+          <div className="flex flex-col items-center">
+            <Spinner />
+            <p className="mt-4 text-black font-semibold text-lg animate-pulse">
+              Authenticating...
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

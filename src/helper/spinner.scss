@@ -1,0 +1,204 @@
+// Theme & Bezier Variables (keep your existing variables here...)
+$indigo-600: #4f46e5;
+$indigo-800: #3730a3;
+$indigo-400: #818cf8;
+$slate-400: #94a3b8;
+
+$ease-out-sine: cubic-bezier(0.61, 1, 0.88, 1);
+$ease-in-cubic: cubic-bezier(0.32, 0, 0.67, 0);
+$ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+$ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+.spinner {
+  color: $indigo-600;
+  overflow: visible;
+  width: 6em; // Size of the spinner
+  height: 6em;
+  display: block;
+  /* Removed 'margin: auto' because the parent container handles it */
+
+  circle,
+  g,
+  path {
+    animation-duration: 3s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+  }
+
+  // Use this for the "Authenticating" phase before the tick
+  &.is-loading {
+    circle,
+    g,
+    path {
+      animation-iteration-count: infinite;
+    }
+    .spinner__check {
+      display: none;
+    }
+  }
+
+  &__check,
+  &__pop-start,
+  &__worm {
+    transform-origin: 24px 24px;
+  }
+
+  &__check {
+    animation-name: check-anim;
+    stroke: $indigo-800;
+    fill: none;
+  }
+
+  &__worm {
+    animation-name: worm-anim;
+  }
+
+  &__pop {
+    &-start {
+      animation-name: pop-start-anim;
+      fill: $indigo-400;
+    }
+    &-end {
+      animation-name: pop-end-anim;
+      stroke: $indigo-600;
+    }
+    &-dot {
+      animation-name: pop-dot-anim;
+      fill: $slate-400;
+      &-group {
+        animation-name: pop-group1;
+        & + & {
+          animation-name: pop-group2;
+        }
+      }
+    }
+  }
+}
+
+// 3. Keyframes Logic
+@keyframes check-anim {
+  0%,
+  64% {
+    stroke-dashoffset: -36.7;
+    transform: scale(1);
+  }
+  75%,
+  77% {
+    animation-timing-function: $ease-in-out-cubic;
+    stroke-dashoffset: 13.7;
+    transform: scale(1);
+  }
+  79% {
+    animation-timing-function: $ease-in-out-cubic;
+    stroke-dashoffset: 13.7;
+    transform: scale(0.4);
+  }
+  87% {
+    animation-timing-function: $ease-in-cubic;
+    stroke-dashoffset: 13.7;
+    transform: scale(1.4);
+  }
+  93%,
+  100% {
+    stroke-dashoffset: 13.7;
+    transform: scale(1);
+  }
+}
+
+@keyframes worm-anim {
+  from {
+    stroke-dashoffset: -51.84;
+    transform: rotate(-119deg);
+  }
+  60% {
+    stroke-dashoffset: -51.84;
+    transform: rotate(961deg);
+  }
+  64% {
+    animation-timing-function: $ease-out-sine;
+    stroke-dashoffset: -51.84;
+    transform: rotate(1033deg);
+  }
+  72.5%,
+  to {
+    stroke-dashoffset: -138.23;
+    transform: rotate(1033deg);
+  }
+}
+
+@keyframes pop-start-anim {
+  from {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  76% {
+    opacity: 1;
+    transform: scale(0.35);
+    animation-timing-function: $ease-in-out-cubic;
+  }
+  82.5% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-end-anim {
+  from {
+    opacity: 0;
+    r: 18px;
+    stroke-width: 4px;
+  }
+  82.5% {
+    opacity: 1;
+    r: 18px;
+    stroke-width: 4px;
+  }
+  84%,
+  to {
+    opacity: 0;
+    r: 19px;
+    stroke-width: 3px;
+  }
+}
+
+@keyframes pop-dot-anim {
+  from,
+  80% {
+    animation-timing-function: $ease-out-cubic;
+    transform: translate(0, 6px);
+  }
+  90%,
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes pop-group1 {
+  from,
+  82.5%,
+  90%,
+  to {
+    opacity: 0;
+  }
+  85%,
+  87.5% {
+    opacity: 1;
+  }
+}
+
+@keyframes pop-group2 {
+  from,
+  82.5%,
+  to {
+    opacity: 0;
+  }
+  85%,
+  90% {
+    opacity: 1;
+  }
+}

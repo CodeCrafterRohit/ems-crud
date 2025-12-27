@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { NavLink, useNavigate } from "react-router-dom";
 import { __AUTH } from "../../backend/firebaseConfig";
+import Spinner from "../../helper/Spinner";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
+  let [loading, setLoading] = useState(false);
+
   const { username, email, password, confirmPassword } = formData;
 
   const handleInputChange = (e) => {
@@ -29,6 +32,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (password === confirmPassword) {
         //! createUserWithEmailAndPassword()
@@ -60,6 +64,8 @@ const SignUp = () => {
       }
     } catch (error) {
       toast.error(error.code);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -189,6 +195,16 @@ const SignUp = () => {
           </form>
         </main>
       </article>
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-999">
+          <div className="flex flex-col items-center">
+            <Spinner />
+            <p className="mt-4 text-black font-semibold text-lg animate-pulse">
+              Redirecting...
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

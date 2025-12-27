@@ -1,25 +1,37 @@
-import React, { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthUserContext } from "../context/AuthContextProvider";
 import { Navigate } from "react-router-dom";
+import Spinner from "../helper/Spinner";
 
 const PrivateRoutes = ({ children }) => {
-  let { authUser, loading } = useContext(AuthUserContext);
-  // console.log(authUser);
+  const { authUser, loading } = useContext(AuthUserContext);
+  const [showApp, setShowApp] = useState(false);
 
-  if (loading) {
+  useEffect(() => {
+    // Once Firebase says loading is done and user exists
+    if (!loading && authUser) {
+      // Wait 3 seconds for the Spinner animation to reach the Tick Mark
+      const timer = setTimeout(() => {
+        setShowApp(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, authUser]);
+
+  if (loading || (authUser && !showApp)) {
     return (
-      <div>
-        <h1>Loading...</h1>
+      <div
+        key="loader-overlay"
+        className="fixed inset-0 flex items-center justify-center bg-slate-50"
+      >
+        <Spinner />
       </div>
     );
   }
 
-  //! If the user is not logged in → redirect to login
-  if (!authUser) {
-    return <Navigate to={"/auth/login"} replace />;
-  } else {
-    return <>{children}</>;
-  }
+  if (!authUser) return <Navigate to="/auth/login" replace />;
+
+  return <>{children}</>;
 };
 
 export default PrivateRoutes;

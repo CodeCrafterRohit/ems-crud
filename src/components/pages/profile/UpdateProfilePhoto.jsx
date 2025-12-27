@@ -17,6 +17,9 @@ const UpdateProfilePhoto = () => {
   //! State for photoPreview
   let [photoPreview, setPhotoPreview] = useState(null);
 
+  //! State for Upload Progress
+  let [progress, setProgress] = useState(0);
+
   //! handleInputChange
   let handleInputChange = (e) => {
     let file = e.target.files[0];
@@ -32,6 +35,7 @@ const UpdateProfilePhoto = () => {
   let handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       if (!photoFile) {
         toast.error("Please select a file first.");
@@ -46,16 +50,25 @@ const UpdateProfilePhoto = () => {
       //? Syntax: append(name, value);
       fileData.append("file", photoFile);
       fileData.append("upload_preset", "user_profiles");
+      //! Change your cloud name instead of my cloud name
       fileData.append("cloud_name", "rohitadhav");
 
       //* Step-3: Send the fileData to the cloundinary
       let imageData = await axios.post(
         "https://api.cloudinary.com/v1_1/rohitadhav/image/upload",
-        fileData
+        fileData,
+        {
+          onUploadProgress: (progressEvent) => {
+            let { loaded, total } = progressEvent;
+            if (progressEvent.lengthComputable) {
+              let uploadPercentProgress = Math.round((loaded * 100) / total);
+              setProgress(uploadPercentProgress);
+            }
+          },
+        }
       );
       // console.log(imageData);
       let uploadedImageUrl = imageData?.data?.url;
-      console.log(uploadedImageUrl);
 
       //* Step-4: Set the uploadedImageUrl to the updateProfile -> photoURL
       await updateProfile(authUser, {
@@ -64,11 +77,15 @@ const UpdateProfilePhoto = () => {
 
       toast.success("Profile Photo Updated Successfully");
       navigate("/profile");
+      window.location.reload(); // Hard Refresh
     } catch (error) {
       console.log("Error While Updating Profile Photo:", error);
       toast.error(error.message);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+        setProgress(0);
+      }, 1000);
     }
   };
 
@@ -133,9 +150,18 @@ const UpdateProfilePhoto = () => {
               Supported formats: JPG, PNG, JPEG, WEBP (Max 5MB)
             </p>
 
+            {progress > 0 && (
+              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-2">
+                <div
+                  className="bg-indigo-600 h-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
+
             <button className="w-full mt-10 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl text-lg transition-all shadow-xl shadow-indigo-100 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
               <HiOutlineCloudUpload className="text-2xl" />
-              {loading ? "Uploading..." : "Update Profile Photo"}
+              {loading ? `Uploading ${progress}%` : "Update Profile Photo"}
             </button>
           </div>
         </form>

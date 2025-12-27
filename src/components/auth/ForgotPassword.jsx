@@ -3,13 +3,16 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { __AUTH } from "../../backend/firebaseConfig";
 import toast from "react-hot-toast";
+import Spinner from "../../helper/Spinner";
 
 const ForgotPassword = () => {
   let navigate = useNavigate();
   const [email, setEmail] = useState("");
+  let [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       //! sendPasswordResetEmail()
       await sendPasswordResetEmail(__AUTH, email);
@@ -17,6 +20,8 @@ const ForgotPassword = () => {
       navigate("/auth/login");
     } catch (error) {
       toast.error(error.code);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,6 +74,16 @@ const ForgotPassword = () => {
           </form>
         </main>
       </article>
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-999">
+          <div className="flex flex-col items-center">
+            <Spinner />
+            <p className="mt-4 text-black font-semibold text-lg animate-pulse">
+              Redirecting to Login...
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

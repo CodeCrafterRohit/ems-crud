@@ -2,10 +2,11 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthUserContext } from "../../context/AuthContextProvider";
 import { HiOutlineLogout } from "react-icons/hi";
+import { BackendUserContext } from "../../context/FetchUserContext";
 
 const Menu = () => {
   let { authUser, logout } = useContext(AuthUserContext);
-  // console.log("authUser", authUser);
+  let { userData } = useContext(BackendUserContext);
 
   //! Anonoymous User => Login, SignUp
   let AnonymousUser = () => {
@@ -47,6 +48,22 @@ const Menu = () => {
   let AuthenticatedUser = () => {
     return (
       <>
+        {userData?.role === "admin" && (
+          <li>
+            <NavLink
+              to={"/profile"}
+              className={({ isActive }) => {
+                return `${
+                  isActive
+                    ? "bg-indigo-700 text-white shadow-md"
+                    : "text-indigo-600 hover:bg-indigo-50"
+                } px-6 py-2 text-lg cursor-pointer rounded-lg transition-all duration-300 ease-in-out font-semibold`;
+              }}
+            >
+              Admin
+            </NavLink>
+          </li>
+        )}
         <li className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full border-2 border-indigo-600 flex items-center justify-center overflow-hidden bg-indigo-50">
             <img src={authUser?.photoURL} alt={authUser?.displayName} />
