@@ -30,7 +30,7 @@ const MyAccount = () => {
             <img
               src={authUser?.photoURL}
               alt="Profile"
-              className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover bg-white"
+              className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-fill bg-white"
             />
             <NavLink
               to={"/profile/update-photo"}
@@ -65,7 +65,7 @@ const MyAccount = () => {
                 No Profile Details Found
               </h3>
               <p className="text-slate-500 mx-auto">
-                It looks like you haven't set up your personal details yet.{" "}
+                It looks like you haven't set up your personal details yet.
                 <br />
                 Complete your profile to get started.
               </p>
