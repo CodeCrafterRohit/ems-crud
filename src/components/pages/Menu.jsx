@@ -40,7 +40,7 @@ const Menu = () => {
       <>
         {userData?.role === "admin" && (
           <li>
-            <NavLink to={"/"} className={linkClasses}>
+            <NavLink to={"/admin/employees"} className={linkClasses}>
               Admin
             </NavLink>
           </li>

@@ -12,6 +12,7 @@ import AddProfile from "../components/pages/profile/AddProfile";
 import UpdateProfilePhoto from "../components/pages/profile/UpdateProfilePhoto";
 import ChangePassword from "../components/pages/profile/ChangePassword";
 import Settings from "../components/pages/profile/Settings";
+import Employees from "../components/employees/Employees";
 
 let myRoutes = createBrowserRouter([
   {
@@ -47,6 +48,14 @@ let myRoutes = createBrowserRouter([
         ),
       },
       {
+        path: "/admin/employees",
+        element: (
+          <PrivateRoutes>
+            <Employees />
+          </PrivateRoutes>
+        ),
+      },
+      {
         path: "/profile",
         element: (
           <PrivateRoutes>
@@ -56,43 +65,23 @@ let myRoutes = createBrowserRouter([
         children: [
           {
             index: true,
-            element: (
-              <PrivateRoutes>
-                <MyAccount />
-               </PrivateRoutes>
-            ),
+            element: <MyAccount />,
           },
           {
             path: "add-profile",
-            element: (
-              <PrivateRoutes>
-                <AddProfile />
-              </PrivateRoutes>
-            ),
+            element: <AddProfile />,
           },
           {
             path: "update-photo",
-            element: (
-              <PrivateRoutes>
-                <UpdateProfilePhoto />
-              </PrivateRoutes>
-            ),
+            element: <UpdateProfilePhoto />,
           },
           {
             path: "change-password",
-            element: (
-              <PrivateRoutes>
-                <ChangePassword />
-              </PrivateRoutes>
-            ),
+            element: <ChangePassword />,
           },
           {
             path: "settings",
-            element: (
-              <PrivateRoutes>
-                <Settings />
-              </PrivateRoutes>
-            ),
+            element: <Settings />,
           },
         ],
       },

@@ -1,0 +1,288 @@
+import React, { useContext, useState } from "react";
+import { BackendUserContext } from "../../context/FetchUserContext";
+import toast from "react-hot-toast";
+import {
+  FaPlus,
+  FaEye,
+  FaEdit,
+  FaTrash,
+  FaSearch,
+  FaUserCircle,
+  FaBriefcase,
+} from "react-icons/fa";
+import { MdEmail, MdMoreVert } from "react-icons/md";
+import Modal from "../Modal";
+import AddEmployeeModal from "../modals/AddEmployeeModal";
+import EditEmployeeModal from "../modals/EditEmployeeModal";
+import DeleteEmployeeModal from "../modals/DeleteEmployeeModal";
+import ViewEmployeeModal from "../modals/ViewEmployeeModal";
+
+const Employees = () => {
+  const { userData } = useContext(BackendUserContext);
+
+  //~ States for Add Employee
+  //! State to control the visibility of the Add Modal
+  let [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  //! Function to close the modal
+  let handleCloseModal = () => setIsAddModalOpen(false);
+
+  //~ States for Edit Employee
+  //! State for edit Modal open or not
+  let [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  //! State for which employee you want to update or edit
+  let [selectedEmployee, setSelectedEmployee] = useState(null);
+
+  //~ States for Delete Employee
+  //! State to open the delete employee modal or not
+  let [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  //! State for which employee you want to delete
+  let [targetEmployee, setTargetEmployee] = useState(null);
+
+  //~ States for View Employee
+  //! State to open view employee modal or not
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  //! State for which employee you want to view
+  const [selectedViewEmployee, setSelectedViewEmployee] = useState(null);
+
+  //! State for search employee by their name, email, or id
+  let [searchTerm, setSearchTerm] = useState("");
+
+  //! Function to handleEditClick
+  let handleEditClick = (employee) => {
+    setSelectedEmployee(employee);
+    setIsEditModalOpen(true);
+  };
+
+  //! Function to openDeleteModal
+  let openDeleteModal = (emp) => {
+    setTargetEmployee(emp);
+    setIsDeleteModalOpen(true);
+  };
+
+  //! Function to handleViewClick
+  const handleViewClick = (emp) => {
+    setSelectedViewEmployee(emp);
+    setIsViewModalOpen(true);
+  };
+
+  if (userData?.role !== "admin") {
+    toast.error("Unauthorized Access!");
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-pulse text-slate-400 font-medium text-lg">
+          Verifying permissions...
+        </div>
+      </div>
+    );
+  }
+
+  const employeeList = [
+    {
+      id: "EMP101",
+      name: "Rohit",
+      email: "rohit.s@company.com",
+      role: "Lead Engineer",
+      dept: "Technology",
+      status: "Active",
+      joined: "Dec 27, 2025",
+    },
+    {
+      id: "EMP102",
+      name: "Yashraj",
+      email: "yashraj.p@company.com",
+      role: "Senior Designer",
+      dept: "Product",
+      status: "Active",
+      joined: "Jan 05, 2025",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] pt-20 pb-12 px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">
+              Team Directory
+            </h1>
+            <p className="text-slate-500 text-sm mt-1">
+              Displaying {employeeList.length} total team members across all
+              departments.
+            </p>
+          </div>
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition-all shadow-sm shadow-indigo-200 active:scale-[0.98] font-medium text-sm"
+          >
+            <FaPlus size={12} />
+            Add New Employee
+          </button>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white">
+            <h2 className="text-base font-semibold text-slate-700">
+              All Employees
+            </h2>
+            <div className="relative w-full sm:w-80">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search by name, email or ID..."
+                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+              />
+              <FaSearch
+                className="absolute left-3.5 top-3 text-slate-400"
+                size={13}
+              />
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-slate-50/50 text-slate-500 text-[11px] uppercase tracking-widest font-bold border-b border-slate-100">
+                  <th className="px-6 py-4">Employee Details</th>
+                  <th className="px-6 py-4">Role & Department</th>
+                  <th className="px-6 py-4 text-center">Status</th>
+                  <th className="px-6 py-4 text-center">Joined Date</th>
+                  <th className="px-6 py-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {employeeList.map((emp) => (
+                  <tr
+                    key={emp.id}
+                    className="group hover:bg-slate-50/80 transition-all duration-200"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <FaUserCircle
+                            size={40}
+                            className="text-slate-200 group-hover:text-indigo-100 transition-colors"
+                          />
+                          <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-800 text-sm leading-tight">
+                            {emp.name}
+                          </p>
+                          <p className="text-slate-400 text-xs mt-1 font-medium">
+                            {emp.id}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-medium text-slate-700">
+                        {emp.role}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-slate-400 text-xs mt-0.5">
+                        <FaBriefcase size={10} />
+                        {emp.dept}
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-4 text-center">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        {emp.status}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-center">
+                      <span className="text-xs font-medium text-slate-600 italic">
+                        {emp.joined}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-md transition-all">
+                          <FaEye size={15} />
+                        </button>
+                        <button className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-100 rounded-md transition-all">
+                          <FaEdit size={14} />
+                        </button>
+                        <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-100 rounded-md transition-all">
+                          <FaTrash size={14} />
+                        </button>
+                      </div>
+                      <button className="sm:hidden text-slate-300">
+                        <MdMoreVert size={20} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="p-4 bg-slate-50/30 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400 font-medium">
+            <p>
+              Showing 1 to {employeeList.length} of {employeeList.length}
+              entries
+            </p>
+            <div className="flex gap-2">
+              <button className="px-3 py-1 bg-white border border-slate-200 rounded text-slate-300 cursor-not-allowed">
+                Previous
+              </button>
+              <button className="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 transition-colors">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* AddEmployeeModal Passed as a children to the Modal */}
+        <Modal
+          isOpen={isAddModalOpen}
+          onClose={handleCloseModal}
+          title="Add New Employee"
+        >
+          <AddEmployeeModal onCancel={handleCloseModal} />
+        </Modal>
+
+        {/* EditEmployeeModal Passed as a children to the Modal */}
+        <Modal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          title="Update Employee Information"
+        >
+          <EditEmployeeModal
+            onCancel={() => setIsEditModalOpen(false)}
+            employeeToEdit={selectedEmployee}
+          />
+        </Modal>
+
+        {/* DeleteEmployeeModal Passed as a children to the Modal */}
+        <Modal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          title="Confirm Deletion"
+        >
+          <DeleteEmployeeModal
+            onCancel={() => setIsDeleteModalOpen(false)}
+            employeeToDelete={targetEmployee}
+          />
+        </Modal>
+
+        {/* ViewEmployeeModal Passed as a children to the Modal */}
+        <Modal
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+          title="Employee Profile"
+        >
+          <ViewEmployeeModal
+            employee={selectedEmployee}
+            onCancel={() => setIsViewModalOpen(false)}
+          />
+        </Modal>
+      </div>
+    </div>
+  );
+};
+
+export default Employees;
