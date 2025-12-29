@@ -30,6 +30,8 @@ const ViewEmployeeModal = ({ employee, onCancel }) => {
     eAddress,
     eJoiningDate,
     eProfilePhoto,
+    eSalary,
+    ePhone,
   } = employee;
 
   const InfoBlock = ({
@@ -106,7 +108,7 @@ const ViewEmployeeModal = ({ employee, onCancel }) => {
           <InfoBlock
             icon={FaMoneyBillWave}
             label="Salary (Annual)"
-            value={`$${Number(eSalary).toLocaleString()}`}
+            value={`Rs.${Number(eSalary).toLocaleString()}`}
             color="text-emerald-500"
           />
         </div>

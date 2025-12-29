@@ -1,5 +1,8 @@
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { __DB } from "../../backend/firebaseConfig";
+import axios from "axios";
 
 const AddEmployeeModal = ({ onCancel }) => {
   //! Logic to generate the Auto-ID
@@ -25,6 +28,7 @@ const AddEmployeeModal = ({ onCancel }) => {
     eProfilePhoto: null,
     eIsActive: "Active",
     eJoiningDate: today,
+    eCreatedAt: serverTimestamp(),
     eAddress: "",
   });
 
@@ -56,7 +60,7 @@ const AddEmployeeModal = ({ onCancel }) => {
       if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
       }
-      setEmployeeDetails((prev) => ({ ...prev, eAge: age > 0 ? age : 0 }));
+      setEmployeeDetails({ ...employeeDetails, eAge: age > 0 ? age : 0 });
     }
   }, [eDob]);
 
@@ -73,19 +77,56 @@ const AddEmployeeModal = ({ onCancel }) => {
       setEmployeeDetails((prev) => ({ ...prev, eProfilePhoto: file }));
 
       //! Optional: file size for validation
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size is too large. (Max 5MB)");
+        return;
+      }
     }
   };
 
-  let handleSubmit = (e) => {
+  let handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      //! Logic We will write here
+      //! Uploading the employee profile photo on cloudinary
+      //! Now we will convert the image into the binary64 with the help of FormData() API
+      //* Step-1: Create the object or instance of the FormData() API.
+      let fileData = new FormData();
+
+      //* Step-2: Attach the file to the fileData with the help of .append()
+      //? Syntax: append(name, value);
+      fileData.append("file", eProfilePhoto);
+      fileData.append("upload_preset", "user_profiles");
+      //! Change your cloud name instead of my cloud name
+      fileData.append("cloud_name", "rohitadhav");
+
+      //* Step-3: Send the fileData to the cloundinary
+      let imageData = await axios.post(
+        "https://api.cloudinary.com/v1_1/rohitadhav/image/upload",
+        fileData
+      );
+
+      let uploadedEmployeeImageUrl = imageData?.data?.url;
+
+      //! Create the payload
+      let payload = {
+        ...employeeDetails,
+        eProfilePhoto: uploadedEmployeeImageUrl,
+      };
+
+      //! Now we will store the payload (employeeDetails + URL) inside the firebase
+
+      //* Step-1: Create the collection -> employee_profiles
+      let employeeCollectionRef = collection(__DB, "employee_profiles");
+
+      //* Step-2: Store the document inside the collection
+      await addDoc(employeeCollectionRef, payload);
+
       console.log("Final Employee Data:", employeeDetails);
       toast.success("New Employee Added Successfully");
       setTimeout(() => {
         onCancel();
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.log("Error while adding employee:", error);
       toast.error(error.message);

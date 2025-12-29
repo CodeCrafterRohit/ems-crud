@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BackendUserContext } from "../../context/FetchUserContext";
 import toast from "react-hot-toast";
 import {
@@ -16,9 +16,14 @@ import AddEmployeeModal from "../modals/AddEmployeeModal";
 import EditEmployeeModal from "../modals/EditEmployeeModal";
 import DeleteEmployeeModal from "../modals/DeleteEmployeeModal";
 import ViewEmployeeModal from "../modals/ViewEmployeeModal";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { __DB } from "../../backend/firebaseConfig";
 
 const Employees = () => {
   const { userData } = useContext(BackendUserContext);
+
+  //! State for AllEmployeeList
+  let [allEmployeeList, setAllEmployeeList] = useState([]);
 
   //~ States for Add Employee
   //! State to control the visibility of the Add Modal
@@ -76,26 +81,22 @@ const Employees = () => {
     );
   }
 
-  const employeeList = [
-    {
-      id: "EMP101",
-      name: "Rohit",
-      email: "rohit.s@company.com",
-      role: "Lead Engineer",
-      dept: "Technology",
-      status: "Active",
-      joined: "Dec 27, 2025",
-    },
-    {
-      id: "EMP102",
-      name: "Yashraj",
-      email: "yashraj.p@company.com",
-      role: "Senior Designer",
-      dept: "Product",
-      status: "Active",
-      joined: "Jan 05, 2025",
-    },
-  ];
+  //! Fetching the all employees from the firebase
+  useEffect(() => {
+    const q = query(
+      collection(__DB, "employee_profiles"),
+      orderBy("eCreatedAt", "desc")
+    );
+    let unsubscribe = onSnapshot(q, (employeeSnapshot) => {
+      let employeeList = employeeSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setAllEmployeeList(employeeList);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pt-20 pb-12 px-6 lg:px-12">
@@ -106,7 +107,7 @@ const Employees = () => {
               Team Directory
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              Displaying {employeeList.length} total team members across all
+              Displaying {allEmployeeList.length} total team members across all
               departments.
             </p>
           </div>
@@ -151,26 +152,33 @@ const Employees = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {employeeList.map((emp) => (
+                {allEmployeeList.map((emp, index) => (
                   <tr
-                    key={emp.id}
+                    key={index}
                     className="group hover:bg-slate-50/80 transition-all duration-200"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <FaUserCircle
-                            size={40}
-                            className="text-slate-200 group-hover:text-indigo-100 transition-colors"
+                        <div className="relative w-10 h-10 rounded-full">
+                          <img
+                            src={emp.eProfilePhoto}
+                            alt="P"
+                            className="w-full h-full object-fill rounded-full"
                           />
-                          <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
+                          {emp.eIsActive === "Active" ? (
+                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
+                          ) : emp.eIsActive === "On Leave" ? (
+                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-amber-500 border-2 border-white rounded-full"></span>
+                          ) : (
+                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>
+                          )}
                         </div>
                         <div>
                           <p className="font-semibold text-slate-800 text-sm leading-tight">
-                            {emp.name}
+                            {emp.eName}
                           </p>
                           <p className="text-slate-400 text-xs mt-1 font-medium">
-                            {emp.id}
+                            {emp.eId}
                           </p>
                         </div>
                       </div>
@@ -178,29 +186,42 @@ const Employees = () => {
 
                     <td className="px-6 py-4">
                       <p className="text-sm font-medium text-slate-700">
-                        {emp.role}
+                        {emp.eRole}
                       </p>
                       <div className="flex items-center gap-1.5 text-slate-400 text-xs mt-0.5">
                         <FaBriefcase size={10} />
-                        {emp.dept}
+                        {emp.eDept}
                       </div>
                     </td>
 
                     <td className="px-6 py-4 text-center">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
-                        {emp.status}
-                      </span>
+                      {emp.eIsActive == "Active" ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                          {emp.eIsActive}
+                        </span>
+                      ) : emp.eIsActive === "On Leave" ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-600 border border-amber-100">
+                          {emp.eIsActive}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 border border-rose-100">
+                          {emp.eIsActive}
+                        </span>
+                      )}
                     </td>
 
                     <td className="px-6 py-4 text-center">
                       <span className="text-xs font-medium text-slate-600 italic">
-                        {emp.joined}
+                        {emp.eJoiningDate}
                       </span>
                     </td>
 
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-md transition-all">
+                        <button
+                          onClick={() => handleViewClick(emp)}
+                          className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-md transition-all"
+                        >
                           <FaEye size={15} />
                         </button>
                         <button className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-100 rounded-md transition-all">
@@ -222,7 +243,7 @@ const Employees = () => {
 
           <div className="p-4 bg-slate-50/30 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400 font-medium">
             <p>
-              Showing 1 to {employeeList.length} of {employeeList.length}
+              Showing 1 to {allEmployeeList.length} of {allEmployeeList.length}
               entries
             </p>
             <div className="flex gap-2">
@@ -276,7 +297,7 @@ const Employees = () => {
           title="Employee Profile"
         >
           <ViewEmployeeModal
-            employee={selectedEmployee}
+            employee={selectedViewEmployee}
             onCancel={() => setIsViewModalOpen(false)}
           />
         </Modal>
