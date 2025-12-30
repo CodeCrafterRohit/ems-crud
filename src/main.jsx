@@ -7,13 +7,16 @@ import myRoutes from "./routes/routes";
 import "./index.css";
 import AuthContextProvider from "./context/AuthContextProvider";
 import FetchUserContext from "./context/FetchUserContext";
+import EmployeeProvider from "./context/EmployeeProvider";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <>
     <AuthContextProvider>
       <FetchUserContext>
-        <Toaster />
-        <RouterProvider router={myRoutes} />
+        <EmployeeProvider>
+          <Toaster />
+          <RouterProvider router={myRoutes} />
+        </EmployeeProvider>
       </FetchUserContext>
     </AuthContextProvider>
   </>

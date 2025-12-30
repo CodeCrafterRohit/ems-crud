@@ -1,5 +1,8 @@
+import axios from "axios";
+import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { __DB } from "../../backend/firebaseConfig";
 
 const EditEmployeeModal = ({ onCancel, employeeToEdit }) => {
   //! State to store which employee you want to edit or update
@@ -7,6 +10,7 @@ const EditEmployeeModal = ({ onCancel, employeeToEdit }) => {
 
   //! Destructure the employeeDetails
   let {
+    id,
     eId,
     eName,
     eMail,
@@ -60,19 +64,53 @@ const EditEmployeeModal = ({ onCancel, employeeToEdit }) => {
       setEmployeeDetails((prev) => ({ ...prev, eProfilePhoto: file }));
 
       //! Optional: file size for validation
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size is too large. (Max 5MB)");
+        return;
+      }
     }
   };
 
-  let handleSubmit = (e) => {
+  let handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      //! Logic We will write here
-      console.log("Final Updated Employee Data:", employeeDetails);
+      //! Uploading the employee profile photo on cloudinary
+      //! Now we will convert the image into the binary64 with the help of FormData() API
+      //* Step-1: Create the object or instance of the FormData() API.
+      let fileData = new FormData();
+
+      //* Step-2: Attach the file to the fileData with the help of .append()
+      //? Syntax: append(name, value);
+      fileData.append("file", eProfilePhoto);
+      fileData.append("upload_preset", "user_profiles");
+      //! Change your cloud name instead of my cloud name
+      fileData.append("cloud_name", "rohitadhav");
+
+      //* Step-3: Send the fileData to the cloundinary
+      let imageData = await axios.post(
+        "https://api.cloudinary.com/v1_1/rohitadhav/image/upload",
+        fileData
+      );
+
+      let updatedEmployeeImageUrl = imageData?.data?.url;
+
+      //! Create the payload
+      let updatedEmployeeDetails = {
+        ...employeeDetails,
+        eProfilePhoto: updatedEmployeeImageUrl,
+      };
+
+      //! Now we will write the firebase logic to update the employee details
+      //? Syntax: doc(db, "collection_name", id);
+      let employeeDocRef = doc(__DB, "employee_profiles", id);
+      await updateDoc(employeeDocRef, updatedEmployeeDetails);
+
+      //   console.log("Final Updated Employee Data:", employeeDetails);
       toast.success("Employee Updated Successfully");
       setTimeout(() => {
         onCancel();
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.log("Error while updating employee:", error);
       toast.error(error.message);

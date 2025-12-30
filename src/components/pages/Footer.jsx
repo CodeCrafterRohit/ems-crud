@@ -1,4 +1,6 @@
-import React from "react";
+import { addDoc, collection } from "firebase/firestore";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 import {
   FaFacebook,
   FaInstagram,
@@ -9,8 +11,39 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { __DB } from "../../backend/firebaseConfig";
 
 const Footer = () => {
+  let [feedBackDetails, setFeedBackDetails] = useState({
+    email: "",
+    feedbackMsg: "",
+  });
+
+  let [loading, setLoading] = useState(false);
+
+  let handleInputChange = (e) => {
+    let { name, value } = e.target;
+    setFeedBackDetails({ ...feedBackDetails, [name]: value });
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      let feedbackRef = collection(__DB, "users_feedback");
+      await addDoc(feedbackRef, feedBackDetails);
+      toast.success("Thank you for your valuable feedback!");
+    } catch (error) {
+      console.log("Error while sending feedback");
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+      setFeedBackDetails({
+        email: "",
+        feedbackMsg: "",
+      });
+    }
+  };
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -117,19 +150,26 @@ const Footer = () => {
             <h3 className="text-xl font-semibold mb-6 border-b-2 border-indigo-500 inline-block pb-1">
               Feedback
             </h3>
-            <form className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <input
                 type="email"
                 placeholder="Your Email"
                 className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-indigo-500 focus:outline-none text-gray-300 placeholder-gray-500"
+                value={feedBackDetails.email}
+                onChange={handleInputChange}
+                name="email"
               />
               <textarea
                 placeholder="Your Message"
                 rows="2"
                 className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-indigo-500 focus:outline-none text-gray-300 placeholder-gray-500 resize-none"
+                value={feedBackDetails.feedbackMsg}
+                onChange={handleInputChange}
+                name="feedbackMsg"
               ></textarea>
               <button className="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">
-                Send <FaPaperPlane className="text-sm" />
+                {loading ? "Sending..." : "Send"}
+                <FaPaperPlane className="text-sm" />
               </button>
             </form>
           </div>

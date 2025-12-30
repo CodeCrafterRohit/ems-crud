@@ -16,14 +16,12 @@ import AddEmployeeModal from "../modals/AddEmployeeModal";
 import EditEmployeeModal from "../modals/EditEmployeeModal";
 import DeleteEmployeeModal from "../modals/DeleteEmployeeModal";
 import ViewEmployeeModal from "../modals/ViewEmployeeModal";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { __DB } from "../../backend/firebaseConfig";
+import { useEmployees } from "../../context/EmployeeProvider";
 
 const Employees = () => {
   const { userData } = useContext(BackendUserContext);
-
-  //! State for AllEmployeeList
-  let [allEmployeeList, setAllEmployeeList] = useState([]);
+  const allEmployeeList = useEmployees();
 
   //~ States for Add Employee
   //! State to control the visibility of the Add Modal
@@ -51,6 +49,19 @@ const Employees = () => {
 
   //! State for search employee by their name, email, or id
   let [searchTerm, setSearchTerm] = useState("");
+
+  //! Filter the employees by their name, id, role, dept, status
+  let filteredEmployeeList = allEmployeeList.filter((emp) => {
+    let term = searchTerm.toLowerCase();
+
+    return (
+      emp?.eName?.toLowerCase().includes(term) ||
+      emp?.eId?.toLowerCase().includes(term) ||
+      emp?.eRole?.toLowerCase().includes(term) ||
+      emp?.eDept?.toLowerCase().includes(term) ||
+      emp?.eIsActive?.toLowerCase().includes(term)
+    );
+  });
 
   //! Function to handleEditClick
   let handleEditClick = (employee) => {
@@ -81,23 +92,6 @@ const Employees = () => {
     );
   }
 
-  //! Fetching the all employees from the firebase
-  useEffect(() => {
-    const q = query(
-      collection(__DB, "employee_profiles"),
-      orderBy("eCreatedAt", "desc")
-    );
-    let unsubscribe = onSnapshot(q, (employeeSnapshot) => {
-      let employeeList = employeeSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setAllEmployeeList(employeeList);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] pt-20 pb-12 px-6 lg:px-12">
       <div className="max-w-7xl mx-auto">
@@ -107,8 +101,8 @@ const Employees = () => {
               Team Directory
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              Displaying {allEmployeeList.length} total team members across all
-              departments.
+              Displaying {filteredEmployeeList.length} total team members across
+              all departments.
             </p>
           </div>
           <button
@@ -152,7 +146,7 @@ const Employees = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {allEmployeeList.map((emp, index) => (
+                {filteredEmployeeList.map((emp, index) => (
                   <tr
                     key={index}
                     className="group hover:bg-slate-50/80 transition-all duration-200"
@@ -224,10 +218,16 @@ const Employees = () => {
                         >
                           <FaEye size={15} />
                         </button>
-                        <button className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-100 rounded-md transition-all">
+                        <button
+                          onClick={() => handleEditClick(emp)}
+                          className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-100 rounded-md transition-all"
+                        >
                           <FaEdit size={14} />
                         </button>
-                        <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-100 rounded-md transition-all">
+                        <button
+                          onClick={() => openDeleteModal(emp)}
+                          className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-100 rounded-md transition-all"
+                        >
                           <FaTrash size={14} />
                         </button>
                       </div>
@@ -243,8 +243,8 @@ const Employees = () => {
 
           <div className="p-4 bg-slate-50/30 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400 font-medium">
             <p>
-              Showing 1 to {allEmployeeList.length} of {allEmployeeList.length}
-              entries
+              Showing {filteredEmployeeList.length} of &nbsp;
+              {allEmployeeList.length} entries
             </p>
             <div className="flex gap-2">
               <button className="px-3 py-1 bg-white border border-slate-200 rounded text-slate-300 cursor-not-allowed">

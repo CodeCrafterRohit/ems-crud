@@ -1,6 +1,8 @@
+import { deleteDoc, doc } from "firebase/firestore";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { FaExclamationTriangle } from "react-icons/fa";
+import { __DB } from "../../backend/firebaseConfig";
 
 const DeleteEmployeeModal = ({ onCancel, employeeToDelete }) => {
   //! State for Loading
@@ -9,15 +11,17 @@ const DeleteEmployeeModal = ({ onCancel, employeeToDelete }) => {
   let handleDelete = async () => {
     setLoading(true);
     try {
-      //! Logic we will write here
-      console.log("Deleted Employee with ID:", employeeToDelete.eId);
-
+      //! deleteDoc(id);
+      let employeeToBeDeletedRef = doc(
+        __DB,
+        "employee_profiles",
+        employeeToDelete.id
+      );
+      await deleteDoc(employeeToBeDeletedRef);
       toast.success(`${employeeToDelete.eName} has been removed.`);
-      setTimeout(() => {
-        onCancel();
-      }, 500);
+      onCancel();
     } catch (error) {
-      toast.error("Failed to delete employee");
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -31,11 +35,12 @@ const DeleteEmployeeModal = ({ onCancel, employeeToDelete }) => {
 
       <h2 className="text-2xl font-bold text-slate-800 mb-2">Are you sure?</h2>
       <p className="text-slate-500 max-w-sm mb-8">
-        You are about to delete <br />
-        <span className="font-bold text-slate-700">
-          {employeeToDelete?.eName}
+        You are about to delete
+        <span className="ml-1 font-bold text-slate-700">
+          {employeeToDelete?.eName}.
         </span>
-        . This action is permanent and cannot be undone.
+        <br />
+        This action is permanent and cannot be undone.
       </p>
 
       <div className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 mb-8 flex items-center gap-4">

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthUserContext } from "../../context/AuthContextProvider";
 import { FaUsers, FaUserCog, FaChartLine, FaArrowRight } from "react-icons/fa";
+import DisplayNewMembers from "../employees/DisplayNewMembers";
 
 const Home = () => {
   const { authUser } = useContext(AuthUserContext);
@@ -55,7 +56,7 @@ const Home = () => {
               table.
             </p>
             <NavLink
-              to="/"
+              to="/admin/employees"
               className="text-indigo-600 font-semibold hover:text-indigo-800 flex items-center gap-1 group-hover:translate-x-1 transition-transform"
             >
               View Employees <FaArrowRight className="text-sm" />
@@ -109,6 +110,7 @@ const Home = () => {
             </p>
           </div>
         </div>
+        <DisplayNewMembers />
       </div>
     </div>
   );
