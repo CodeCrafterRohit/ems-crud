@@ -13,6 +13,8 @@ import UpdateProfilePhoto from "../components/pages/profile/UpdateProfilePhoto";
 import ChangePassword from "../components/pages/profile/ChangePassword";
 import Settings from "../components/pages/profile/Settings";
 import Employees from "../components/employees/Employees";
+import DeleteUserAccount from "../components/pages/profile/DeleteUserAccount";
+import DataAnalytics from "../components/analytics/DataAnalytics";
 
 let myRoutes = createBrowserRouter([
   {
@@ -56,6 +58,14 @@ let myRoutes = createBrowserRouter([
         ),
       },
       {
+        path: "/admin/employee-analytics",
+        element: (
+          <PrivateRoutes>
+            <DataAnalytics />
+          </PrivateRoutes>
+        ),
+      },
+      {
         path: "/profile",
         element: (
           <PrivateRoutes>
@@ -82,6 +92,10 @@ let myRoutes = createBrowserRouter([
           {
             path: "settings",
             element: <Settings />,
+          },
+          {
+            path: "delete-user-account",
+            element: <DeleteUserAccount />,
           },
         ],
       },

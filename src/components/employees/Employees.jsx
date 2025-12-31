@@ -18,6 +18,8 @@ import DeleteEmployeeModal from "../modals/DeleteEmployeeModal";
 import ViewEmployeeModal from "../modals/ViewEmployeeModal";
 import { __DB } from "../../backend/firebaseConfig";
 import { useEmployees } from "../../context/EmployeeProvider";
+import ExportActions from "../exports/ExportActions";
+import Pagination from "../pagination/Pagination";
 
 const Employees = () => {
   const { userData } = useContext(BackendUserContext);
@@ -81,6 +83,50 @@ const Employees = () => {
     setIsViewModalOpen(true);
   };
 
+  //! State for selection
+  const [selectedIds, setSelectedIds] = useState([]);
+
+  //! Toggle Single Selection
+  const handleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  //! Toggle Select All
+  const handleSelectAll = () => {
+    if (selectedIds.length === allEmployeeList?.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(allEmployeeList.map((emp) => emp.eId));
+    }
+  };
+
+  //! Filter data to send to exoprt
+  const selectedDataForExport = allEmployeeList?.filter((emp) =>
+    selectedIds.includes(emp.eId)
+  );
+
+  const [itemOffset, setItemOffset] = useState(0);
+  //! Adjust this number as needed
+  const itemsPerPage = 3;
+
+  //! Calculate end offset
+  const endOffset = itemOffset + itemsPerPage;
+  //! This is the sliced list you will actually map over in your table
+  const currentItems = filteredEmployeeList.slice(itemOffset, endOffset);
+  const pageCount = Math.ceil(filteredEmployeeList.length / itemsPerPage);
+
+  const handlePageClick = (e) => {
+    const newOffset = (e.selected * itemsPerPage) % filteredEmployeeList.length;
+    setItemOffset(newOffset);
+  };
+
+  //! Reset to page 1 when searching
+  useEffect(() => {
+    setItemOffset(0);
+  }, [searchTerm]);
+
   if (userData?.role !== "admin") {
     toast.error("Unauthorized Access!");
     return (
@@ -105,13 +151,16 @@ const Employees = () => {
               all departments.
             </p>
           </div>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition-all shadow-sm shadow-indigo-200 active:scale-[0.98] font-medium text-sm"
-          >
-            <FaPlus size={12} />
-            Add New Employee
-          </button>
+          <div className="flex items-center gap-4">
+            <ExportActions selectedData={selectedDataForExport} />
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition-all shadow-sm shadow-indigo-200 active:scale-[0.98] font-medium text-sm"
+            >
+              <FaPlus size={12} />
+              Add New Employee
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -138,7 +187,20 @@ const Employees = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-slate-50/50 text-slate-500 text-[11px] uppercase tracking-widest font-bold border-b border-slate-100">
-                  <th className="px-6 py-4">Employee Details</th>
+                  <th className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer accent-indigo-600"
+                        onChange={handleSelectAll}
+                        checked={
+                          allEmployeeList?.length > 0 &&
+                          selectedIds.length === allEmployeeList?.length
+                        }
+                      />
+                      <span>Employee Details</span>
+                    </div>
+                  </th>
                   <th className="px-6 py-4">Role & Department</th>
                   <th className="px-6 py-4 text-center">Status</th>
                   <th className="px-6 py-4 text-center">Joined Date</th>
@@ -146,26 +208,36 @@ const Employees = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {filteredEmployeeList.map((emp, index) => (
+                {currentItems.map((emp, index) => (
                   <tr
                     key={index}
-                    className="group hover:bg-slate-50/80 transition-all duration-200"
+                    className={`group hover:bg-slate-100/50 transition-colors ${
+                      selectedIds.includes(emp.eId) ? "bg-indigo-50/50" : ""
+                    }`}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="relative w-10 h-10 rounded-full">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer accent-indigo-600"
+                          checked={selectedIds.includes(emp.eId)}
+                          onChange={() => handleSelect(emp.eId)}
+                        />
+                        <div className="relative w-10 h-10 rounded-full shrink-0">
                           <img
                             src={emp.eProfilePhoto}
                             alt="P"
-                            className="w-full h-full object-fill rounded-full"
+                            className="w-full h-full object-cover rounded-full bg-slate-100"
                           />
-                          {emp.eIsActive === "Active" ? (
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
-                          ) : emp.eIsActive === "On Leave" ? (
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-amber-500 border-2 border-white rounded-full"></span>
-                          ) : (
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></span>
-                          )}
+                          <span
+                            className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${
+                              emp.eIsActive === "Active"
+                                ? "bg-emerald-500"
+                                : emp.eIsActive === "On Leave"
+                                ? "bg-amber-500"
+                                : "bg-red-500"
+                            }`}
+                          ></span>
                         </div>
                         <div>
                           <p className="font-semibold text-slate-800 text-sm leading-tight">
@@ -241,18 +313,18 @@ const Employees = () => {
             </table>
           </div>
 
-          <div className="p-4 bg-slate-50/30 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400 font-medium">
-            <p>
-              Showing {filteredEmployeeList.length} of &nbsp;
-              {allEmployeeList.length} entries
+          <div className="p-4 bg-slate-50/30 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-slate-400 font-medium order-2 sm:order-1">
+              Showing {itemOffset + 1} to{" "}
+              {Math.min(endOffset, filteredEmployeeList.length)} of{" "}
+              {filteredEmployeeList.length} entries
             </p>
-            <div className="flex gap-2">
-              <button className="px-3 py-1 bg-white border border-slate-200 rounded text-slate-300 cursor-not-allowed">
-                Previous
-              </button>
-              <button className="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 transition-colors">
-                Next
-              </button>
+
+            <div className="order-1 sm:order-2">
+              <Pagination
+                pageCount={pageCount}
+                handlePageClick={handlePageClick}
+              />
             </div>
           </div>
         </div>

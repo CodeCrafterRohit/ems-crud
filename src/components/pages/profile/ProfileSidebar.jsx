@@ -47,10 +47,13 @@ const ProfileSidebar = () => {
       </nav>
 
       <div className="pt-6 border-t border-slate-100">
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:text-rose-600 bg-rose-600 text-white font-semibold text-base hover:bg-rose-100 transition-all duration-300">
+        <NavLink
+          to={"delete-user-account"}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:text-rose-600 bg-rose-600 text-white font-semibold text-base hover:bg-rose-100 transition-all duration-300"
+        >
           <HiOutlineTrash className="text-2xl" />
           Delete Account
-        </button>
+        </NavLink>
       </div>
     </aside>
   );

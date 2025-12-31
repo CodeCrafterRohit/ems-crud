@@ -52,8 +52,8 @@ const Home = () => {
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-3">Employees</h3>
             <p className="text-gray-500 mb-4">
-              View and manage your entire workforce in one centralized modular
-              table.
+              One single modular table allows you to view and manage your whole
+              staff.
             </p>
             <NavLink
               to="/admin/employees"
@@ -71,8 +71,8 @@ const Home = () => {
               Role Management
             </h3>
             <p className="text-gray-500 mb-4">
-              Admin-controlled access ensuring secure and organized data
-              handling.
+              Administrator-controlled access ensures safe and well-organized
+              data processing.
             </p>
             <NavLink
               to="/profile"
@@ -88,11 +88,15 @@ const Home = () => {
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-3">Analytics</h3>
             <p className="text-gray-500 mb-4">
-              Visual insights into your team structure and growth over time.
+              Visual representations of the team's structure and growth over
+              time.
             </p>
-            <span className="text-green-600 font-semibold cursor-pointer hover:text-green-800 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+            <NavLink
+              to={"/admin/employee-analytics"}
+              className="text-green-600 font-semibold cursor-pointer hover:text-green-800 flex items-center gap-1 group-hover:translate-x-1 transition-transform"
+            >
               View Reports <FaArrowRight className="text-sm" />
-            </span>
+            </NavLink>
           </div>
         </div>
 
