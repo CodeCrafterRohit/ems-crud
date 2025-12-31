@@ -109,7 +109,7 @@ const Employees = () => {
 
   const [itemOffset, setItemOffset] = useState(0);
   //! Adjust this number as needed
-  const itemsPerPage = 3;
+  const itemsPerPage = 5;
 
   //! Calculate end offset
   const endOffset = itemOffset + itemsPerPage;
